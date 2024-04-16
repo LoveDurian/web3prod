@@ -7,7 +7,7 @@
 3. 第三阶段：外部合作和开源发展阶段（待定）
 
 # 演示地址
-https://c2-n-launchpad-git-feat-dev-fe-lance10030s-projects.vercel.app/
+https://c2-n-launchpad.vercel.app/
 
 # 产品需求
 内部版本没有kyc，注册流程
