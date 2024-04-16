@@ -14,7 +14,8 @@ import {
   tokenImage,
 } from '@src/config'
 import { useEffect, useMemo } from 'react'
-import Mask from '@src/components/elements/mask'
+import Mask from '@src/components/elements/Mask'
+import { HelperLink } from '@src/util'
 
 /**
  * Stake form page
@@ -70,6 +71,7 @@ export default function Pools({ Component, pageProps }: AppProps) {
                 <span
                   className={styles['link']}
                   onClick={() => {
+                    window.open(HelperLink)
                   }}>{isDesktopOrLaptop ? 'C2N Staking Tutorial' : 'Tutorial'} </span>
               </span>
             </Col>

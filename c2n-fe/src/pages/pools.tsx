@@ -17,7 +17,7 @@ import { useResponsive } from '@src/hooks/useResponsive';
 import { useMessage } from '@src/hooks/useMessage';
 
 import { Row, Col } from 'antd'
-import Mask from '@src/components/elements/mask'
+import Mask from '@src/components/elements/Mask'
 
 export default function Pools({ Component, pageProps }: AppProps) {
   const {
