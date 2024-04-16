@@ -7,8 +7,8 @@
 3. 第三阶段：外部合作和开源发展阶段（待定）
 
 # 演示地址
-https://web3-project-git-feat-fe-dev-lance10030s-projects.vercel.app/
-（得用最新的地址）
+https://c2-n-launchpad-git-feat-dev-fe-lance10030s-projects.vercel.app/
+
 # 产品需求
 内部版本没有kyc，注册流程
 C2N launchpad是一个区块链上的一个去中心化发行平台，专注于启动和支持新项目。它提供了一个平台，允许新的和现有的项目通过代币销售为自己筹集资金，同时也为投资者提供了一个参与初期项目投资的机会。下面是C2N launchpad产品流程的大致分析：
