@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <!--引用springboot的application.properties/yml中的属性-->
+<!--<springProperty scope="context" name="projectName" source="spring.application.name"/>
+    <springProperty scope="context" name="redisHost" source="spring.redis.host" defaultValue="127.0.0.1"/>
+    <springProperty scope="context" name="redisPort" source="spring.redis.port" defaultValue="6379"/>
+    <springProperty scope="context" name="redisPassword" source="spring.redis.password" defaultValue=""/>
+    <springProperty scope="context" name="redisDatabase" source="spring.redis.database" defaultValue=""/>-->
+    <!--输出日志到 Redis list-->
+    <appender name="REDIS" class="com.bobabrewery.common.logging.appender.RedisAppender">
+        <project>${projectName}</project>
+        <hostName>${redisHost}</hostName>
+        <port>${redisPort}</port>
+        <password>${redisPassword}</password>
+        <database>${redisDatabase}</database>
+    </appender>
+    <!--异步-->
+    <appender name="REDIS_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="REDIS"/>
+    </appender>
+</included>

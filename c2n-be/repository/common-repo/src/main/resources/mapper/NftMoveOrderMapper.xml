@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.common.mapper.NftMoveOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.common.domain.model.NftMoveOrder">
+        <id property="id" column="id"/>
+        <result property="tokenid" column="tokenId"/>
+        <result property="status" column="status"/>
+        <result property="txid" column="txId"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,tokenId,status,
+        txId
+    </sql>
+
+    <sql id="criteria">
+        <where>
+            <if test="id != null">AND `id` = #{id}</if>
+            <if test="tokenid != null">AND `tokenId` = #{tokenid}</if>
+            <if test="status != null">AND `status` = #{status}</if>
+            <if test="txid != null">AND `txId` = #{txid}</if>
+        </where>
+    </sql>
+
+
+    <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_nft_move_order
+        where id = #{id}
+    </select>
+
+    <select id="findByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_nft_move_order
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="findTokenIdList" resultType="java.lang.Long">
+        select tokenId
+        from brewery_nft_move_order
+        where `status` = 0
+    </select>
+
+    <select id="findTxIdByStatus" resultType="java.lang.String">
+        select txID
+        from brewery_nft_move_order
+        where `status` = #{status}
+    </select>
+
+    <select id="count" parameterType="com.bobabrewery.repo.common.domain.model.NftMoveOrder" resultType="long">
+        select count(1)
+        from brewery_nft_move_order
+        <include refid="criteria"/>
+    </select>
+
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete
+        from brewery_nft_move_order
+        where id = #{id}
+    </delete>
+    <update id="saledTokenId">
+        update brewery_nft_move_order
+        set status = 3
+        where tokenId = #{tokenId}
+    </update>
+
+    <insert id="create" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.NftMoveOrder"
+            useGeneratedKeys="true">
+        insert into brewery_nft_move_order
+            (tokenId, status, txId)
+        values (#{tokenid}, #{status}, #{txid})
+    </insert>
+
+    <insert id="creates" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.NftMoveOrder"
+            useGeneratedKeys="true">
+        insert into brewery_nft_move_order
+        (tokenId,status,txId)
+        values
+        <foreach collection="list" item="i" index="index" separator=",">
+            (#{i.tokenid},#{i.status},#{i.txid})
+        </foreach>
+    </insert>
+
+    <insert id="createHas" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.NftMoveOrder"
+            useGeneratedKeys="true">
+        insert into brewery_nft_move_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tokenid != null">tokenId,</if>
+            <if test="status != null">status,</if>
+            <if test="txid != null">txId,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tokenid != null">#{tokenid},</if>
+            <if test="status != null">#{status},</if>
+            <if test="txid != null">#{txid},</if>
+        </trim>
+    </insert>
+    <update id="updateByIdHas" parameterType="com.bobabrewery.repo.common.domain.model.NftMoveOrder">
+        update brewery_nft_move_order
+        <set>
+            <if test="tokenid != null">
+                tokenId = #{tokenid},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="txid != null">
+                txId = #{txid},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateById" parameterType="com.bobabrewery.repo.common.domain.model.NftMoveOrder">
+        update brewery_nft_move_order
+        set tokenId = #{tokenid},
+            status  = #{status},
+            txId    = #{txid}
+        where id = #{id}
+    </update>
+    <update id="updateByTokenId">
+        update brewery_nft_move_order
+        set txId   = #{txId},
+            status = #{status}
+        where tokenId = #{tokenId}
+    </update>
+
+    <update id="updateStatusByTxId">
+        update brewery_nft_move_order
+        set `status` = #{status}
+        where `txId` = #{txId}
+    </update>
+</mapper>

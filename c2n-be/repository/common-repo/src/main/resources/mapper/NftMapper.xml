@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.common.mapper.NftMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.common.domain.model.Nft">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="subtitle" column="subTitle"/>
+        <result property="logo" column="logo"/>
+        <result property="publisherName" column="publisher_name"/>
+        <result property="publisherLogo" column="publisher_logo"/>
+        <result property="introduction" column="introduction"/>
+        <result property="steps" column="steps" typeHandler="com.bobabrewery.repo.common.JsonTypeHandler"/>
+        <result property="mintContract" column="mint_contract"/>
+        <result property="nftContract" column="nft_contract"/>
+        <result property="status" column="status"/>
+        <result property="totalQuantity" column="total_quantity"/>
+        <result property="currentPrice" column="current_price"/>
+        <result property="price" column="price"/>
+        <result property="medias" column="medias" typeHandler="com.bobabrewery.repo.common.JsonTypeHandler"/>
+        <result property="background" column="background"
+                typeHandler="com.bobabrewery.repo.common.JsonTypeHandler"/>
+        <result property="chainId" column="chain_id"/>
+        <result property="expirationTime" column="expiration_time"/>
+        <result property="issueTime" column="issue_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,subTitle,
+        logo,publisher_name,publisher_logo,
+        introduction,steps,mint_contract,nft_contract,
+        status,total_quantity,current_price,
+        price,medias,background,
+        chain_id,expiration_time,issue_time,
+            create_time,update_time
+    </sql>
+
+    <sql id="criteria">
+        <where>
+            <if test="id != null">AND `id` = #{id}</if>
+            <if test="name != null">AND `name` = #{name}</if>
+            <if test="subtitle != null">AND `subTitle` = #{subtitle}</if>
+            <if test="logo != null">AND `logo` = #{logo}</if>
+            <if test="publisherName != null">AND `publisher_name` = #{publisherName}</if>
+            <if test="publisherLogo != null">AND `publisher_logo` = #{publisherLogo}</if>
+            <if test="introduction != null">AND `introduction` = #{introduction}</if>
+            <if test="steps != null">AND `steps` = #{steps}</if>
+            <if test="mintContract != null">AND `mint_contract` = #{mintContract}</if>
+            <if test="status != null">AND `status` = #{status}</if>
+            <if test="totalQuantity != null">AND `total_quantity` = #{totalQuantity}</if>
+            <if test="currentPrice != null">AND `current_price` = #{currentPrice}</if>
+            <if test="price != null">AND `price` = #{price}</if>
+            <if test="medias != null">AND `medias` = #{medias}</if>
+            <if test="background != null">AND `background` = #{background}</if>
+            <if test="chainId != null">AND `chain_id` = #{chainId}</if>
+            <if test="expirationTime != null">AND `expiration_time` = #{expirationTime}</if>
+            <if test="issueTime != null">AND `issue_time` = #{issueTime}</if>
+            <if test="createTime != null">AND `create_time` = #{createTime}</if>
+            <if test="updateTime != null">AND `update_time` = #{updateTime}</if>
+        </where>
+    </sql>
+    <update id="updateStatus">
+        update brewery_nft
+        set status = #{status}
+        where id = #{id}
+    </update>
+
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_nft
+        where id = #{id}
+    </select>
+
+    <select id="findByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_nft
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="count" parameterType="com.bobabrewery.repo.common.domain.model.Nft" resultType="long">
+        select count(1)
+        from brewery_nft
+        <include refid="criteria"/>
+    </select>
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_nft
+        <where>
+            <if test="where.id != null">AND `id` = #{where.id}
+            </if>
+            <if test="where.name != null">AND `name` = #{where.name}
+            </if>
+            <if test="where.subtitle != null">AND `subTitle` = #{where.subtitle}
+            </if>
+            <if test="where.logo != null">AND `logo` = #{where.logo}
+            </if>
+            <if test="where.publisherName != null">AND `publisher_name` = #{where.publisherName}
+            </if>
+            <if test="where.publisherLogo != null">AND `publisher_logo` = #{where.publisherLogo}
+            </if>
+            <if test="where.introduction != null">AND `introduction` = #{where.introduction}
+            </if>
+            <if test="where.steps != null">AND `steps` = #{where.steps}
+            </if>
+            <if test="where.mintContract != null">AND `mint_contract` = #{where.mintContract}
+            </if>
+            <if test="where.status != null">AND `status` = #{where.status}
+            </if>
+            <if test="where.totalQuantity != null">AND `total_quantity` = #{where.totalQuantity}
+            </if>
+            <if test="where.currentPrice != null">AND `current_price` = #{where.currentPrice}
+            </if>
+            <if test="where.price != null">AND `price` = #{where.price}
+            </if>
+            <if test="where.medias != null">AND `medias` = #{where.medias}
+            </if>
+            <if test="where.background != null">AND `background` = #{where.background}
+            </if>
+            <if test="where.chainId != null">AND `chain_id` = #{where.chainId}
+            </if>
+            <if test="where.expirationTime != null">AND `expiration_time` = #{where.expirationTime}
+            </if>
+            <if test="where.issueTime != null">AND `issue_time` = #{where.issueTime}
+            </if>
+            <if test="where.createTime != null">AND `create_time` = #{where.createTime}
+            </if>
+            <if test="where.updateTime != null">AND `update_time` = #{where.updateTime}
+            </if>
+        </where>
+        order by `id` desc
+        <if test="page.startIndex != null and page.pageSize != null">
+            limit #{page.startIndex}, #{page.pageSize}
+        </if>
+    </select>
+</mapper>

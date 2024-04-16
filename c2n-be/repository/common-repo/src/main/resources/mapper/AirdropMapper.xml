@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.common.mapper.AirdropMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.common.domain.model.Airdrop">
+        <id property="id" column="id"/>
+        <result property="pid" column="pid"/>
+        <result property="walletAddress" column="wallet_address"/>
+        <result property="amount" column="amount"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,pid,wallet_address,
+        amount
+    </sql>
+
+    <sql id="criteria">
+        <where>
+            <if test="id != null">AND `id` = #{id}</if>
+            <if test="pid != null">AND `pid` = #{pid}</if>
+            <if test="walletAddress != null">AND `wallet_address` = #{walletAddress}</if>
+            <if test="amount != null">AND `amount` = #{amount}</if>
+        </where>
+    </sql>
+
+
+    <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_airdrop
+        where id = #{id}
+    </select>
+
+    <select id="findByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_airdrop
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="count" parameterType="com.bobabrewery.repo.common.domain.model.Airdrop" resultType="long">
+        select count(1)
+        from brewery_airdrop
+        <include refid="criteria"/>
+    </select>
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_airdrop
+        <where>
+            <if test="where.id != null">AND `id` = #{where.id}
+            </if>
+            <if test="where.pid != null">AND `pid` = #{where.pid}
+            </if>
+            <if test="where.walletAddress != null">AND `wallet_address` = #{where.walletAddress}
+            </if>
+            <if test="where.amount != null">AND `amount` = #{where.amount}
+            </if>
+        </where>
+        order by `id` desc
+        <if test="page.startIndex != null and page.pageSize != null">
+            limit #{page.startIndex}, #{page.pageSize}
+        </if>
+    </select>
+    <select id="findByPidAndWalletAddress" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_airdrop
+        where pid = #{pid} and wallet_address = #{walletAddress}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete
+        from brewery_airdrop
+        where id = #{id}
+    </delete>
+
+    <insert id="create" keyColumn="id" keyProperty="id" parameterType="com.bobabrewery.repo.common.domain.model.Airdrop"
+            useGeneratedKeys="true">
+        insert into brewery_airdrop
+            (pid, wallet_address, amount)
+        values (#{pid}, #{walletAddress}, #{amount})
+    </insert>
+
+    <insert id="creates" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.Airdrop"
+            useGeneratedKeys="true">
+        insert into brewery_airdrop
+        (pid,wallet_address,amount)
+        values
+        <foreach collection="list" item="i" index="index" separator=",">
+            (#{i.pid},#{i.walletAddress},#{i.amount})
+        </foreach>
+    </insert>
+
+    <insert id="createHas" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.Airdrop"
+            useGeneratedKeys="true">
+        insert into brewery_airdrop
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pid != null">pid,</if>
+            <if test="walletAddress != null">wallet_address,</if>
+            <if test="amount != null">amount,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pid != null">#{pid},</if>
+            <if test="walletAddress != null">#{walletAddress},</if>
+            <if test="amount != null">#{amount},</if>
+        </trim>
+    </insert>
+    <update id="updateByIdHas" parameterType="com.bobabrewery.repo.common.domain.model.Airdrop">
+        update brewery_airdrop
+        <set>
+            <if test="pid != null">
+                pid = #{pid},
+            </if>
+            <if test="walletAddress != null">
+                wallet_address = #{walletAddress},
+            </if>
+            <if test="amount != null">
+                amount = #{amount},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateById" parameterType="com.bobabrewery.repo.common.domain.model.Airdrop">
+        update brewery_airdrop
+        set pid            = #{pid},
+            wallet_address = #{walletAddress},
+            amount         = #{amount}
+        where id = #{id}
+    </update>
+</mapper>

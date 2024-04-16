@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.mail.mapper.MailHistoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.mail.domain.MailHistory">
+        <id property="id" column="id"/>
+        <result property="templateId" column="template_id"/>
+        <result property="email" column="email"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,template_id,email,
+        create_time,update_time
+    </sql>
+
+    <insert id="create" keyColumn="id" keyProperty="id" parameterType="com.bobabrewery.repo.mail.domain.MailHistory"
+            useGeneratedKeys="true">
+        insert into brewery_mail_history
+            (template_id, email)
+        values (#{templateId}, #{email})
+    </insert>
+
+    <insert id="creates" keyColumn="id" keyProperty="id" parameterType="com.bobabrewery.repo.mail.domain.MailHistory"
+            useGeneratedKeys="true">
+        insert into brewery_mail_history
+        (template_id,email)
+        values
+        <foreach collection="list" item="i" index="index" separator=",">
+            (#{i.templateId},#{i.email})
+        </foreach>
+    </insert>
+
+</mapper>

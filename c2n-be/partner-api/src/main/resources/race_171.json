@@ -1,0 +1,258 @@
+{
+    "code": 0,
+    "message": "ss",
+    "data": {
+        "race_id": 171,
+        "status": 2,
+        "race_name": "Houston Racecourse",
+        "racecourse": "galaxy",
+        "distance": 1200,
+        "race_url": "http://race3d.dbytothemoon.com/?id=171&type=3",
+        "start_at": 1659070200911147,
+        "time_elapsed": 70.13253679873583,
+        "prize_pool": "10000000000000000000000",
+        "shortest_time_elapsed": 71.15295329423016,
+        "ranking": [
+            {
+                "horse_id": 25824,
+                "user_id": 2046,
+                "horse_name": "87172125824",
+                "time_elapsed": 71.15295329423016,
+                "gate": 0,
+                "bloodLine": "Standardbreds",
+                "acceleration": "Epic",
+                "aggressiveness": "Epic",
+                "sprintSpeed": "Pacer",
+                "image_url": "https://d2vvute2v3y7pn.cloudfront.net/NFT/normal/normal_%23FFCC33.png",
+                "color": {
+                    "R": 0.99609375,
+                    "G": 0.796875,
+                    "B": 0.19921875
+                },
+                "award": "100000000000000000000",
+                "rank": 9,
+                "wallet_addr": "0x74469b4d1d5d274db54e23afc061d76ce306eacd"
+            },
+            {
+                "horse_id": 25828,
+                "user_id": 12,
+                "horse_name": "87172125828",
+                "time_elapsed": 71.55772464036411,
+                "gate": 1,
+                "bloodLine": "Citation",
+                "acceleration": "Pacer",
+                "aggressiveness": "Pacer",
+                "sprintSpeed": "Legendary",
+                "image_url": "https://d2vvute2v3y7pn.cloudfront.net/NFT/normal/normal_%2329CC7B.png",
+                "color": {
+                    "R": 0.16015625,
+                    "G": 0.796875,
+                    "B": 0.48046875
+                },
+                "award": "100000000000000000000",
+                "rank": 12,
+                "wallet_addr": "0xceee92ada5445ecf4a4d3845383967177b616c2a"
+            },
+            {
+                "horse_id": 25831,
+                "user_id": 2142,
+                "horse_name": "87172125831",
+                "time_elapsed": 70.0073616618379,
+                "gate": 2,
+                "bloodLine": "Count Fleet",
+                "acceleration": "Elite",
+                "aggressiveness": "Legendary",
+                "sprintSpeed": "Elite",
+                "image_url": "https://d2vvute2v3y7pn.cloudfront.net/NFT/normal/normal_%235C995C.png",
+                "color": {
+                    "R": 0.359375,
+                    "G": 0.59765625,
+                    "B": 0.359375
+                },
+                "award": "5000000000000000000000",
+                "rank": 1,
+                "wallet_addr": "0x896f9e9EB10E6F74311eF9665816cEaCfc48EAF1"
+            },
+            {
+                "horse_id": 25826,
+                "user_id": 2041,
+                "horse_name": "87172125826",
+                "time_elapsed": 70.64934831697411,
+                "gate": 3,
+                "bloodLine": "Standardbreds",
+                "acceleration": "Rare",
+                "aggressiveness": "Rare",
+                "sprintSpeed": "Epic",
+                "image_url": "https://d2vvute2v3y7pn.cloudfront.net/NFT/normal/normal_%23FF33FF.png",
+                "color": {
+                    "R": 0.99609375,
+                    "G": 0.19921875,
+                    "B": 0.99609375
+                },
+                "award": "100000000000000000000",
+                "rank": 5,
+                "wallet_addr": "0x2a6f4d280078714da0f45907e96e7003dd0d1d72"
+            },
+            {
+                "horse_id": 25827,
+                "user_id": 5,
+                "horse_name": "87172125827",
+                "time_elapsed": 70.56266572216863,
+                "gate": 4,
+                "bloodLine": "Citation",
+                "acceleration": "Legendary",
+                "aggressiveness": "Epic",
+                "sprintSpeed": "Elite",
+                "image_url": "https://d2vvute2v3y7pn.cloudfront.net/NFT/normal/normal_%23153E66.png",
+                "color": {
+                    "R": 0.08203125,
+                    "G": 0.2421875,
+                    "B": 0.3984375
+                },
+                "award": "1000000000000000000000",
+                "rank": 3,
+                "wallet_addr": "0x702abfdb64ac32fdee20752b2b4106420f21c529"
+            },
+            {
+                "horse_id": 25830,
+                "user_id": 2143,
+                "horse_name": "87172125830",
+                "time_elapsed": 71.47088754539078,
+                "gate": 5,
+                "bloodLine": "Count Fleet",
+                "acceleration": "Rare",
+                "aggressiveness": "Elite",
+                "sprintSpeed": "Epic",
+                "image_url": "https://d2vvute2v3y7pn.cloudfront.net/NFT/normal/normal_%23CCFF33.png",
+                "color": {
+                    "R": 0.796875,
+                    "G": 0.99609375,
+                    "B": 0.19921875
+                },
+                "award": "100000000000000000000",
+                "rank": 11,
+                "wallet_addr": "0xdb58998bA205CE30B9fA64FdF7A7d8bCB674A8e0"
+            },
+            {
+                "horse_id": 25825,
+                "user_id": 2042,
+                "horse_name": "87172125825",
+                "time_elapsed": 71.04411021234817,
+                "gate": 6,
+                "bloodLine": "Citation",
+                "acceleration": "Rare",
+                "aggressiveness": "Rare",
+                "sprintSpeed": "Elite",
+                "image_url": "https://d2vvute2v3y7pn.cloudfront.net/NFT/normal/normal_%23004D66.png",
+                "color": {
+                    "R": 0,
+                    "G": 0.30078125,
+                    "B": 0.3984375
+                },
+                "award": "100000000000000000000",
+                "rank": 7,
+                "wallet_addr": "0x72ec260971a8d4ba2acede9222692f2d7aae81f9"
+            },
+            {
+                "horse_id": 25829,
+                "user_id": 2144,
+                "horse_name": "87172125829",
+                "time_elapsed": 71.05059046172312,
+                "gate": 7,
+                "bloodLine": "Count Fleet",
+                "acceleration": "Rare",
+                "aggressiveness": "Epic",
+                "sprintSpeed": "Legendary",
+                "image_url": "https://d2vvute2v3y7pn.cloudfront.net/NFT/normal/normal_%234D9900.png",
+                "color": {
+                    "R": 0.30078125,
+                    "G": 0.59765625,
+                    "B": 0
+                },
+                "award": "100000000000000000000",
+                "rank": 8,
+                "wallet_addr": "0x93030b061B49eF5a08146D569c105E8Cf0398c3B"
+            },
+            {
+                "horse_id": 25832,
+                "user_id": 2140,
+                "horse_name": "87172125832",
+                "time_elapsed": 71.42280339709298,
+                "gate": 8,
+                "bloodLine": "Citation",
+                "acceleration": "Rare",
+                "aggressiveness": "Pacer",
+                "sprintSpeed": "Elite",
+                "image_url": "https://d2vvute2v3y7pn.cloudfront.net/NFT/normal/normal_%23CCFF99.png",
+                "color": {
+                    "R": 0.796875,
+                    "G": 0.99609375,
+                    "B": 0.59765625
+                },
+                "award": "100000000000000000000",
+                "rank": 10,
+                "wallet_addr": "0x67a7e9b75bc282ecdb41e65075ab0ea14de06115"
+            },
+            {
+                "horse_id": 25834,
+                "user_id": 2047,
+                "horse_name": "87172125834",
+                "time_elapsed": 70.85506459879578,
+                "gate": 9,
+                "bloodLine": "Count Fleet",
+                "acceleration": "Epic",
+                "aggressiveness": "Rare",
+                "sprintSpeed": "Pacer",
+                "image_url": "https://d2vvute2v3y7pn.cloudfront.net/NFT/normal/normal_%23CC297B.png",
+                "color": {
+                    "R": 0.796875,
+                    "G": 0.16015625,
+                    "B": 0.48046875
+                },
+                "award": "100000000000000000000",
+                "rank": 6,
+                "wallet_addr": "0x4dbf038cbcd2e20e0615c4c68250fc553f33d81d"
+            },
+            {
+                "horse_id": 25833,
+                "user_id": 2141,
+                "horse_name": "87172125833",
+                "time_elapsed": 70.60097576041538,
+                "gate": 10,
+                "bloodLine": "Citation",
+                "acceleration": "Legendary",
+                "aggressiveness": "Rare",
+                "sprintSpeed": "Elite",
+                "image_url": "https://d2vvute2v3y7pn.cloudfront.net/NFT/normal/normal_%238DFF66.png",
+                "color": {
+                    "R": 0.55078125,
+                    "G": 0.99609375,
+                    "B": 0.3984375
+                },
+                "award": "200000000000000000000",
+                "rank": 4,
+                "wallet_addr": "0x028bff351848a330d71111fece2a884ca7871721"
+            },
+            {
+                "horse_id": 25835,
+                "user_id": 2048,
+                "horse_name": "87172125835",
+                "time_elapsed": 70.13253679873583,
+                "gate": 11,
+                "bloodLine": "Standardbreds",
+                "acceleration": "Epic",
+                "aggressiveness": "Epic",
+                "sprintSpeed": "Rare",
+                "image_url": "https://d2vvute2v3y7pn.cloudfront.net/NFT/normal/normal_%23663E52.png",
+                "color": {
+                    "R": 0.3984375,
+                    "G": 0.2421875,
+                    "B": 0.3203125
+                },
+                "award": "3000000000000000000000",
+                "rank": 2,
+                "wallet_addr": "0x116c3d489733b588db781a897e393054490d4ebe"
+            }
+        ]
+    }
+}

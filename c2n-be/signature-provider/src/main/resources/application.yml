@@ -1,0 +1,4 @@
+server:
+    port: 30002
+    servlet:
+        context-path: /encode

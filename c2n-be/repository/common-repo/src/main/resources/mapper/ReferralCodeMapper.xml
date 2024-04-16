@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.common.mapper.ReferralCodeMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.common.domain.model.ReferralCode">
+        <result property="walletAddress" column="wallet_address"/>
+        <result property="pid" column="pid"/>
+        <result property="referralCode" column="referral_code"/>
+        <result property="participant" column="participant"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        wallet_address,pid,referral_code,
+        participant,status
+    </sql>
+
+    <sql id="criteria">
+        <where>
+            <if test="walletAddress != null">AND `wallet_address` = #{walletAddress}</if>
+            <if test="pid != null">AND `pid` = #{pid}</if>
+            <if test="referralCode != null">AND `referral_code` = #{referralCode}</if>
+            <if test="participant != null">AND `participant` = #{participant}</if>
+            <if test="status != null">AND `status` = #{status}</if>
+        </where>
+    </sql>
+    <update id="updateStatusByReferralCodeAndParticipant">
+        update brewery_referral_code
+        set `status` = #{status}
+        where referral_code = #{referralCode}
+          and participant = #{participant}
+    </update>
+
+
+    <select id="findByReferralCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_referral_code
+        where referral_code = #{referralCode} and participant is null limit 1
+    </select>
+
+    <select id="count" parameterType="com.bobabrewery.repo.common.domain.model.ReferralCode" resultType="long">
+        select count(1)
+        from brewery_referral_code
+        <include refid="criteria"/>
+    </select>
+    <select id="findReferralCodeByWalletAddressAndPid" resultType="java.lang.String">
+        select referral_code
+        from brewery_referral_code
+        where wallet_address = #{walletAddress}
+          and pid = #{pid}
+        limit 1
+    </select>
+    <select id="countByReferralCodeAndStatus" resultType="java.lang.Long">
+        select count(1)
+        from brewery_referral_code
+        where referral_code = #{referralCode}
+          and `status` = 1
+    </select>
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_referral_code
+    </select>
+
+    <insert id="create" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.ReferralCode"
+            useGeneratedKeys="true">
+        insert into brewery_referral_code
+            (wallet_address, pid, referral_code, participant, status)
+        values (#{walletAddress}, #{pid}, #{referralCode}, #{participant}, #{status})
+    </insert>
+
+    <insert id="createHas" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.ReferralCode"
+            useGeneratedKeys="true">
+        insert into brewery_referral_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="walletAddress != null">wallet_address,</if>
+            <if test="pid != null">pid,</if>
+            <if test="referralCode != null">referral_code,</if>
+            <if test="participant != null">participant,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="walletAddress != null">#{walletAddress},</if>
+            <if test="pid != null">#{pid},</if>
+            <if test="referralCode != null">#{referralCode},</if>
+            <if test="participant != null">#{participant},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+    </insert>
+
+</mapper>

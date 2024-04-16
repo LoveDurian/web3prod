@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.common.mapper.UserInfoDao">
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.common.domain.model.UserInfo">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <id column="account_id" jdbcType="VARCHAR" property="accountId"/>
+        <result column="login_email" jdbcType="VARCHAR" property="loginEmail"/>
+        <result column="tg_name" jdbcType="VARCHAR" property="tgName"/>
+        <result column="tg_id" jdbcType="VARCHAR" property="tgId"/>
+        <result column="login_time" jdbcType="TIMESTAMP" property="loginTime"/>
+        <result column="login_ip" jdbcType="VARCHAR" property="loginIp"/>
+        <result column="user_address" jdbcType="VARCHAR" property="userAddress"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, account_id,`login_email`,login_time, login_ip, tg_name, tg_id, user_address,create_time
+    </sql>
+
+    <select id="selectByEmailOnly" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_info
+        where login_email = #{loginEmail, jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByEmail" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_info
+        where login_email = #{loginEmail, jdbcType=VARCHAR}
+        <if test="accountId != null and accountId != ''">
+            or account_id = #{accountId, jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="selectByAccountId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_info
+        where account_id = #{accountId, jdbcType=VARCHAR}
+    </select>
+
+    <select id="findByAccountId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_info
+        where account_id = #{accountId}
+    </select>
+
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.UserInfo"
+            useGeneratedKeys="true">
+        insert into user_info (`login_email`, login_time, login_ip)
+        values (#{loginEmail,jdbcType=VARCHAR},
+                #{loginTime,jdbcType=TIMESTAMP}, #{loginIp,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.UserInfo" useGeneratedKeys="true">
+        insert into user_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="loginEmail != null">
+                `login_email`,
+            </if>
+
+            <if test="accountId != null">
+                `account_id`,
+            </if>
+
+            <if test="loginTime != null">
+                login_time,
+            </if>
+            <if test="loginIp != null">
+                login_ip,
+            </if>
+            <if test="registerIp != null">
+                register_ip,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="loginEmail != null">
+                #{loginEmail,jdbcType=VARCHAR},
+            </if>
+
+            <if test="accountId != null">
+                #{accountId,jdbcType=VARCHAR},
+            </if>
+            <if test="loginTime != null">
+                #{loginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="loginIp != null">
+                #{loginIp,jdbcType=VARCHAR},
+            </if>
+            <if test="registerIp != null">
+                #{registerIp,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="updateTgInfo">
+        update user_info
+        set tg_name = #{tgName,jdbcType=VARCHAR},
+            tg_id   = #{tgId,jdbcType=VARCHAR}
+        where account_id = #{accountId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateAddressInfo">
+        update user_info
+        set user_address = #{userAddress,jdbcType=VARCHAR}
+        where account_id = #{accountId,jdbcType=VARCHAR}
+    </update>
+
+
+</mapper>

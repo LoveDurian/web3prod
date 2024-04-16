@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.common.mapper.BridgeOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.common.domain.model.BridgeOrder">
+        <id property="orderId" column="order_id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="status" column="status"/>
+        <result property="depositCoin" column="deposit_coin"/>
+        <result property="depositTxid" column="deposit_txid"/>
+        <result property="depositNetwork" column="deposit_network"/>
+        <result property="depositAddr" column="deposit_addr"/>
+        <result property="depositAmount" column="deposit_amount"/>
+        <result property="spReceiveAddr" column="sp_receive_addr"/>
+        <result property="spReceiveMemo" column="sp_receive_memo"/>
+        <result property="receiveCoin" column="receive_coin"/>
+        <result property="receiveNetwork" column="receive_network"/>
+        <result property="receiveAddr" column="receive_addr"/>
+        <result property="receiveMemo" column="receive_memo"/>
+        <result property="receiveAmount" column="receive_amount"/>
+        <result property="receivetTxid" column="receivet_txid"/>
+        <result property="receiveFee" column="receive_fee"/>
+        <result property="txFeeRate" column="tx_fee_rate"/>
+        <result property="refundAddr" column="refund_addr"/>
+        <result property="refundMemo" column="refund_memo"/>
+        <result property="refundStatus" column="refund_status"/>
+        <result property="refundTxid" column="refund_txid"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        order_id,account_id,status,
+        deposit_coin,deposit_txid,deposit_network,
+        deposit_addr,deposit_amount,sp_receive_addr,
+        sp_receive_memo,receive_coin,receive_network,
+        receive_addr,receive_memo,receive_amount,
+        receivet_txid,receive_fee,tx_fee_rate,
+        refund_addr,refund_memo,refund_status,
+        refund_txid,create_time,update_time
+    </sql>
+
+    <sql id="criteria">
+        <where>
+            <if test="orderId != null">AND `order_id` = #{orderId}</if>
+            <if test="accountId != null">AND `account_id` = #{accountId}</if>
+            <if test="status != null">AND `status` = #{status}</if>
+            <if test="depositCoin != null">AND `deposit_coin` = #{depositCoin}</if>
+            <if test="depositTxid != null">AND `deposit_txid` = #{depositTxid}</if>
+            <if test="depositNetwork != null">AND `deposit_network` = #{depositNetwork}</if>
+            <if test="depositAddr != null">AND `deposit_addr` = #{depositAddr}</if>
+            <if test="depositAmount != null">AND `deposit_amount` = #{depositAmount}</if>
+            <if test="spReceiveAddr != null">AND `sp_receive_addr` = #{spReceiveAddr}</if>
+            <if test="spReceiveMemo != null">AND `sp_receive_memo` = #{spReceiveMemo}</if>
+            <if test="receiveCoin != null">AND `receive_coin` = #{receiveCoin}</if>
+            <if test="receiveNetwork != null">AND `receive_network` = #{receiveNetwork}</if>
+            <if test="receiveAddr != null">AND `receive_addr` = #{receiveAddr}</if>
+            <if test="receiveMemo != null">AND `receive_memo` = #{receiveMemo}</if>
+            <if test="receiveAmount != null">AND `receive_amount` = #{receiveAmount}</if>
+            <if test="receivetTxid != null">AND `receivet_txid` = #{receivetTxid}</if>
+            <if test="receiveFee != null">AND `receive_fee` = #{receiveFee}</if>
+            <if test="txFeeRate != null">AND `tx_fee_rate` = #{txFeeRate}</if>
+            <if test="refundAddr != null">AND `refund_addr` = #{refundAddr}</if>
+            <if test="refundMemo != null">AND `refund_memo` = #{refundMemo}</if>
+            <if test="refundStatus != null">AND `refund_status` = #{refundStatus}</if>
+            <if test="refundTxid != null">AND `refund_txid` = #{refundTxid}</if>
+            <if test="createTime != null">AND `create_time` = #{createTime}</if>
+            <if test="updateTime != null">AND `update_time` = #{updateTime}</if>
+            and `create_time` is not null and status !=1
+        </where>
+    </sql>
+
+
+    <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_bridge_order
+        where order_id = #{orderId}
+    </select>
+
+    <select id="findByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_bridge_order
+        where order_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="count" parameterType="com.bobabrewery.repo.common.domain.model.BridgeOrder" resultType="long">
+        select count(1)
+        from brewery_bridge_order
+        <include refid="criteria"/>
+    </select>
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_bridge_order
+        <where>
+            <if test="where.orderId != null">AND `order_id` = #{where.orderId}
+            </if>
+            <if test="where.accountId != null">AND `account_id` = #{where.accountId}
+            </if>
+            <if test="where.status != null">AND `status` = #{where.status}
+            </if>
+            <if test="where.depositCoin != null">AND `deposit_coin` = #{where.depositCoin}
+            </if>
+            <if test="where.depositTxid != null">AND `deposit_txid` = #{where.depositTxid}
+            </if>
+            <if test="where.depositNetwork != null">AND `deposit_network` = #{where.depositNetwork}
+            </if>
+            <if test="where.depositAddr != null">AND `deposit_addr` = #{where.depositAddr}
+            </if>
+            <if test="where.depositAmount != null">AND `deposit_amount` = #{where.depositAmount}
+            </if>
+            <if test="where.spReceiveAddr != null">AND `sp_receive_addr` = #{where.spReceiveAddr}
+            </if>
+            <if test="where.spReceiveMemo != null">AND `sp_receive_memo` = #{where.spReceiveMemo}
+            </if>
+            <if test="where.receiveCoin != null">AND `receive_coin` = #{where.receiveCoin}
+            </if>
+            <if test="where.receiveNetwork != null">AND `receive_network` = #{where.receiveNetwork}
+            </if>
+            <if test="where.receiveAddr != null">AND `receive_addr` = #{where.receiveAddr}
+            </if>
+            <if test="where.receiveMemo != null">AND `receive_memo` = #{where.receiveMemo}
+            </if>
+            <if test="where.receiveAmount != null">AND `receive_amount` = #{where.receiveAmount}
+            </if>
+            <if test="where.receivetTxid != null">AND `receivet_txid` = #{where.receivetTxid}
+            </if>
+            <if test="where.receiveFee != null">AND `receive_fee` = #{where.receiveFee}
+            </if>
+            <if test="where.txFeeRate != null">AND `tx_fee_rate` = #{where.txFeeRate}
+            </if>
+            <if test="where.refundAddr != null">AND `refund_addr` = #{where.refundAddr}
+            </if>
+            <if test="where.refundMemo != null">AND `refund_memo` = #{where.refundMemo}
+            </if>
+            <if test="where.refundStatus != null">AND `refund_status` = #{where.refundStatus}
+            </if>
+            <if test="where.refundTxid != null">AND `refund_txid` = #{where.refundTxid}
+            </if>
+            <if test="where.createTime != null">AND `create_time` = #{where.createTime}
+            </if>
+            <if test="where.updateTime != null">AND `update_time` = #{where.updateTime}
+            </if>
+            and `create_time` is not null and status !=1
+        </where>
+        order by create_time desc
+        <if test="page.startIndex != null and page.pageSize != null">
+            limit #{page.startIndex}, #{page.pageSize}
+        </if>
+    </select>
+    <select id="findOrderIdByAccountId" resultType="java.lang.String">
+        select order_id
+        from brewery_bridge_order
+        where account_id = #{accountId}
+    </select>
+    <select id="countByOrderId" resultType="java.lang.Integer">
+        select count(1)
+        from brewery_bridge_order
+        where order_id = #{orderId}
+    </select>
+
+    <select id="findOrderIdByAccountIdNotEnd" resultType="java.lang.String">
+        select order_id
+        from brewery_bridge_order
+        where account_id = #{accountId}
+          and status &lt; 13
+          and deposit_txid is not null
+          and deposit_txid != ''
+    </select>
+    <select id="findAllAccountId" resultType="java.lang.String">
+        select account_id
+        from brewery_bridge_order
+        group by account_id
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete
+        from brewery_bridge_order
+        where order_id = #{orderId}
+    </delete>
+
+    <insert id="create" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.BridgeOrder"
+            useGeneratedKeys="true">
+        insert into brewery_bridge_order
+        (account_id, status, deposit_coin, deposit_txid, deposit_network, deposit_addr, deposit_amount, sp_receive_addr,
+         sp_receive_memo, receive_coin, receive_network, receive_addr, receive_memo, receive_amount, receivet_txid,
+         receive_fee, tx_fee_rate, refund_addr, refund_memo, refund_status, refund_txid, update_time)
+        values (#{accountId}, #{status}, #{depositCoin}, #{depositTxid}, #{depositNetwork}, #{depositAddr},
+                #{depositAmount}, #{spReceiveAddr}, #{spReceiveMemo}, #{receiveCoin}, #{receiveNetwork}, #{receiveAddr},
+                #{receiveMemo}, #{receiveAmount}, #{receivetTxid}, #{receiveFee}, #{txFeeRate}, #{refundAddr},
+                #{refundMemo}, #{refundStatus}, #{refundTxid}, #{updateTime})
+    </insert>
+
+    <insert id="creates" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.BridgeOrder"
+            useGeneratedKeys="true">
+        insert into brewery_bridge_order
+        (account_id,status,deposit_coin,deposit_txid,deposit_network,deposit_addr,deposit_amount,sp_receive_addr,sp_receive_memo,receive_coin,receive_network,receive_addr,receive_memo,receive_amount,receivet_txid,receive_fee,tx_fee_rate,refund_addr,refund_memo,refund_status,refund_txid,update_time)
+        values
+        <foreach collection="list" item="i" index="index" separator=",">
+            (#{i.accountId},#{i.status},#{i.depositCoin},#{i.depositTxid},#{i.depositNetwork},#{i.depositAddr},#{i.depositAmount},#{i.spReceiveAddr},#{i.spReceiveMemo},#{i.receiveCoin},#{i.receiveNetwork},#{i.receiveAddr},#{i.receiveMemo},#{i.receiveAmount},#{i.receivetTxid},#{i.receiveFee},#{i.txFeeRate},#{i.refundAddr},#{i.refundMemo},#{i.refundStatus},#{i.refundTxid},#{i.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="createHas" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.BridgeOrder"
+            useGeneratedKeys="true">
+        insert into brewery_bridge_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="accountId != null">account_id,</if>
+            <if test="status != null">status,</if>
+            <if test="depositCoin != null">deposit_coin,</if>
+            <if test="depositTxid != null">deposit_txid,</if>
+            <if test="depositNetwork != null">deposit_network,</if>
+            <if test="depositAddr != null">deposit_addr,</if>
+            <if test="depositAmount != null">deposit_amount,</if>
+            <if test="spReceiveAddr != null">sp_receive_addr,</if>
+            <if test="spReceiveMemo != null">sp_receive_memo,</if>
+            <if test="receiveCoin != null">receive_coin,</if>
+            <if test="receiveNetwork != null">receive_network,</if>
+            <if test="receiveAddr != null">receive_addr,</if>
+            <if test="receiveMemo != null">receive_memo,</if>
+            <if test="receiveAmount != null">receive_amount,</if>
+            <if test="receivetTxid != null">receivet_txid,</if>
+            <if test="receiveFee != null">receive_fee,</if>
+            <if test="txFeeRate != null">tx_fee_rate,</if>
+            <if test="refundAddr != null">refund_addr,</if>
+            <if test="refundMemo != null">refund_memo,</if>
+            <if test="refundStatus != null">refund_status,</if>
+            <if test="refundTxid != null">refund_txid,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="accountId != null">#{accountId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="depositCoin != null">#{depositCoin},</if>
+            <if test="depositTxid != null">#{depositTxid},</if>
+            <if test="depositNetwork != null">#{depositNetwork},</if>
+            <if test="depositAddr != null">#{depositAddr},</if>
+            <if test="depositAmount != null">#{depositAmount},</if>
+            <if test="spReceiveAddr != null">#{spReceiveAddr},</if>
+            <if test="spReceiveMemo != null">#{spReceiveMemo},</if>
+            <if test="receiveCoin != null">#{receiveCoin},</if>
+            <if test="receiveNetwork != null">#{receiveNetwork},</if>
+            <if test="receiveAddr != null">#{receiveAddr},</if>
+            <if test="receiveMemo != null">#{receiveMemo},</if>
+            <if test="receiveAmount != null">#{receiveAmount},</if>
+            <if test="receivetTxid != null">#{receivetTxid},</if>
+            <if test="receiveFee != null">#{receiveFee},</if>
+            <if test="txFeeRate != null">#{txFeeRate},</if>
+            <if test="refundAddr != null">#{refundAddr},</if>
+            <if test="refundMemo != null">#{refundMemo},</if>
+            <if test="refundStatus != null">#{refundStatus},</if>
+            <if test="refundTxid != null">#{refundTxid},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+    <update id="updateByIdHas" parameterType="com.bobabrewery.repo.common.domain.model.BridgeOrder">
+        update brewery_bridge_order
+        <set>
+            <if test="accountId != null">
+                account_id = #{accountId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="depositCoin != null">
+                deposit_coin = #{depositCoin},
+            </if>
+            <if test="depositTxid != null">
+                deposit_txid = #{depositTxid},
+            </if>
+            <if test="depositNetwork != null">
+                deposit_network = #{depositNetwork},
+            </if>
+            <if test="depositAddr != null">
+                deposit_addr = #{depositAddr},
+            </if>
+            <if test="depositAmount != null">
+                deposit_amount = #{depositAmount},
+            </if>
+            <if test="spReceiveAddr != null">
+                sp_receive_addr = #{spReceiveAddr},
+            </if>
+            <if test="spReceiveMemo != null">
+                sp_receive_memo = #{spReceiveMemo},
+            </if>
+            <if test="receiveCoin != null">
+                receive_coin = #{receiveCoin},
+            </if>
+            <if test="receiveNetwork != null">
+                receive_network = #{receiveNetwork},
+            </if>
+            <if test="receiveAddr != null">
+                receive_addr = #{receiveAddr},
+            </if>
+            <if test="receiveMemo != null">
+                receive_memo = #{receiveMemo},
+            </if>
+            <if test="receiveAmount != null">
+                receive_amount = #{receiveAmount},
+            </if>
+            <if test="receivetTxid != null">
+                receivet_txid = #{receivetTxid},
+            </if>
+            <if test="receiveFee != null">
+                receive_fee = #{receiveFee},
+            </if>
+            <if test="txFeeRate != null">
+                tx_fee_rate = #{txFeeRate},
+            </if>
+            <if test="refundAddr != null">
+                refund_addr = #{refundAddr},
+            </if>
+            <if test="refundMemo != null">
+                refund_memo = #{refundMemo},
+            </if>
+            <if test="refundStatus != null">
+                refund_status = #{refundStatus},
+            </if>
+            <if test="refundTxid != null">
+                refund_txid = #{refundTxid},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where order_id = #{orderId}
+    </update>
+    <update id="updateById" parameterType="com.bobabrewery.repo.common.domain.model.BridgeOrder">
+        update brewery_bridge_order
+        set account_id      = #{accountId},
+            status          = #{status},
+            deposit_coin    = #{depositCoin},
+            deposit_txid    = #{depositTxid},
+            deposit_network = #{depositNetwork},
+            deposit_addr    = #{depositAddr},
+            deposit_amount  = #{depositAmount},
+            sp_receive_addr = #{spReceiveAddr},
+            sp_receive_memo = #{spReceiveMemo},
+            receive_coin    = #{receiveCoin},
+            receive_network = #{receiveNetwork},
+            receive_addr    = #{receiveAddr},
+            receive_memo    = #{receiveMemo},
+            receive_amount  = #{receiveAmount},
+            receivet_txid   = #{receivetTxid},
+            receive_fee     = #{receiveFee},
+            tx_fee_rate     = #{txFeeRate},
+            refund_addr     = #{refundAddr},
+            refund_memo     = #{refundMemo},
+            refund_status   = #{refundStatus},
+            refund_txid     = #{refundTxid},
+            create_time     = #{createTime},
+            update_time     = #{updateTime}
+        where order_id = #{orderId}
+    </update>
+    <update id="updateDepositTxidByOrderId">
+        update brewery_bridge_order
+        set deposit_txid = #{depositTxid}
+        where order_id = #{orderId}
+    </update>
+</mapper>

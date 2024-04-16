@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bobabrewery.repo.common.mapper.TwitterTaskMapper">
+    <resultMap id="TwitterTaskMap" type="com.bobabrewery.repo.common.domain.model.TwitterTask">
+        <result property="accountId" column="account_id"/>
+        <result property="pid" column="pid"/>
+        <result property="twitterId" column="twitter_id"/>
+        <result property="twitterName" column="twitter_name"/>
+        <result property="retweetLink" column="retweet_link"/>
+        <result property="follower" column="follower"/>
+        <result property="retweet" column="retweet"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+
+    <sql id="columns_all">
+        `account_id`, `pid`, `twitter_id`, `twitter_name`, `retweet_link`, `follower`, `retweet`, `create_time`,`update_time`
+    </sql>
+
+
+    <sql id="values_all">
+        #{accountId},
+        #{pid},
+        #{twitterId},
+        #{twitterName},
+        #{retweetLink},
+        #{follower},
+        #{retweet},
+        #{createTime},
+        #{updateTime}
+    </sql>
+
+    <sql id="criteria">
+        <where>
+            <if test="accountId != null">AND `account_id` = #{accountId}</if>
+            <if test="pid != null">AND `pid` = #{pid}</if>
+            <if test="twitterId != null">AND `twitter_id` = #{twitterId}</if>
+            <if test="twitterName != null">AND `twitter_name` = #{twitterName}</if>
+            <if test="retweetLink != null">AND `retweet_link` = #{retweetLink}</if>
+            <if test="follower != null">AND `follower` = #{follower}</if>
+            <if test="retweet != null">AND `retweet` = #{retweet}</if>
+            <if test="createTime != null">AND `create_time` = #{createTime}</if>
+            <if test="updateTime != null">AND `update_time` = #{updateTime}</if>
+        </where>
+    </sql>
+
+    <insert id="create" parameterType="com.bobabrewery.repo.common.domain.model.TwitterTask" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into twitter_task (account_id, pid, twitter_name, retweet_link)
+        values (#{accountId}, #{pid}, #{twitterName}, #{retweetLink});
+    </insert>
+
+
+    <select id="findById" resultMap="TwitterTaskMap">
+        SELECT
+        <include refid="columns_all"/>
+        FROM
+        twitter_task
+        WHERE account_id = #{id} LIMIT 1
+    </select>
+
+    <select id="findByIds" parameterType="list" resultMap="TwitterTaskMap">
+        SELECT
+        <include refid="columns_all"/>
+        FROM
+        twitter_task
+        WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <update id="update" parameterType="com.bobabrewery.repo.common.domain.model.TwitterTask">
+        UPDATE
+        twitter_task
+        <set>
+            <if test="accountId != null">`account_id` = #{accountId},</if>
+            <if test="pid != null">`pid` = #{pid},</if>
+            <if test="twitterId != null">`twitter_id` = #{twitterId},</if>
+            <if test="twitterName != null">`twitter_name` = #{twitterName},</if>
+            <if test="retweetLink != null">`retweet_link` = #{retweetLink},</if>
+            <if test="follower != null">`follower` = #{follower},</if>
+            <if test="retweet != null">`retweet` = #{retweet},</if>
+            update_time = now()
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateFollowerByTwitterId">
+        update twitter_task
+        set follower = 1
+        where twitter_id = #{twitterId}
+          and follower = 0
+    </update>
+
+
+    <select id="count" parameterType="map" resultType="long">
+        SELECT COUNT(1)
+        FROM
+        twitter_task
+        <include refid="criteria"/>
+    </select>
+
+    <select id="list" parameterType="map" resultMap="TwitterTaskMap">
+        SELECT
+        <include refid="columns_all"/>
+        FROM
+        twitter_task
+        <include refid="criteria"/>
+        ORDER BY `account_id` DESC
+    </select>
+    <select id="countNotFollower" resultType="java.lang.Integer">
+        select COUNT(1)
+        FROM twitter_task
+        where follower = 0
+    </select>
+    <select id="countNotRetweet" resultType="java.lang.Integer">
+        select COUNT(1)
+        FROM twitter_task
+        where retweet = 0
+    </select>
+
+    <select id="selectTwitterIdIsNull" resultMap="TwitterTaskMap">
+        select
+        <include refid="columns_all"/>
+        from twitter_task
+        where twitter_name is not null and twitter_id is null limit #{limit}
+    </select>
+    <select id="findByAccountIdAndPid" resultMap="TwitterTaskMap">
+        SELECT
+        <include refid="columns_all"/>
+        FROM
+        twitter_task
+        WHERE account_id = #{accountId} and pid=#{pid} LIMIT 1
+    </select>
+
+
+    <update id="updateTwitterIdByTwitterName">
+        update twitter_task
+        set twitter_id = #{twitterId}
+        where twitter_name = #{twitterName}
+    </update>
+
+    <update id="updateRetweetByTwitterId">
+        update twitter_task
+        set retweet = 1
+        where twitter_id = #{twitterId}
+          and retweet = 0
+    </update>
+
+    <update id="updateRetweetByTwitterIds">
+        update twitter_task
+        set retweet = 1
+        where retweet = 0 and twitter_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.common.mapper.MoveRefundMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.common.domain.model.MoveRefund">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="walletAddress" column="wallet_address" jdbcType="VARCHAR"/>
+        <result property="tokenId" column="token_id" jdbcType="INTEGER"/>
+        <result property="price" column="price" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <select id="findByWalletAddress" resultMap="BaseResultMap">
+        select token_id, price
+        from brewery_move_refund
+        where wallet_address = #{walletAddress}
+    </select>
+    <select id="exist" resultType="java.lang.Integer">
+        select count(1)
+        from brewery_move_refund
+        where wallet_address = #{walletAddress}
+    </select>
+</mapper>

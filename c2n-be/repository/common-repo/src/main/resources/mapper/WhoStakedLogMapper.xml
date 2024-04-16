@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.common.mapper.WhoStakedLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.common.domain.model.WhoStakedLog">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="walletAddress" column="wallet_address" jdbcType="VARCHAR"/>
+        <result property="contractAddress" column="contract_address" jdbcType="VARCHAR"/>
+        <result property="ip" column="ip" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,wallet_address,contract_address,ip,
+        create_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from who_staked_log
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectByWalletAddress" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from who_staked_log
+        where wallet_address = #{walletAddress}
+    </select>
+    <select id="countByWalletAddressAndContractAddress" resultType="java.lang.Integer">
+        select count(1)
+        from who_staked_log
+        where wallet_address = #{walletAddress}
+          and contract_address = #{contractAddress}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from who_staked_log
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.WhoStakedLog" useGeneratedKeys="true">
+        insert into who_staked_log
+        ( id, wallet_address, contract_address, ip
+        , create_time)
+        values ( #{id,jdbcType=BIGINT}, #{walletAddress,jdbcType=VARCHAR}, #{contractAddress,jdbcType=VARCHAR}
+               , #{ip,jdbcType=VARCHAR}
+               , #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.WhoStakedLog" useGeneratedKeys="true">
+        insert into who_staked_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="walletAddress != null">wallet_address,</if>
+            <if test="contractAddress != null">contract_address,</if>
+            <if test="ip != null">ip,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id,jdbcType=BIGINT},</if>
+            <if test="walletAddress != null">#{walletAddress,jdbcType=VARCHAR},</if>
+            <if test="contractAddress != null">#{contractAddress,jdbcType=VARCHAR},</if>
+            <if test="ip != null">#{ip,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.bobabrewery.repo.common.domain.model.WhoStakedLog">
+        update who_staked_log
+        <set>
+            <if test="walletAddress != null">
+                wallet_address = #{walletAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="contractAddress != null">
+                contract_address = #{contractAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                ip = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.bobabrewery.repo.common.domain.model.WhoStakedLog">
+        update who_staked_log
+        set wallet_address   = #{walletAddress,jdbcType=VARCHAR},
+            contract_address = #{contractAddress,jdbcType=VARCHAR},
+            ip               = #{ip,jdbcType=VARCHAR},
+            create_time      = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

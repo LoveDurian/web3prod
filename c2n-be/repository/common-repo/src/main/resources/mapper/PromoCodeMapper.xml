@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.common.mapper.PromoCodeMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.common.domain.model.PromoCode">
+        <id property="id" column="id"/>
+        <result property="promoCode" column="promo_code"/>
+        <result property="discount" column="discount"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,promo_code,discount
+    </sql>
+
+    <sql id="criteria">
+        <where>
+            <if test="id != null">AND `id` = #{id}</if>
+            <if test="promoCode != null">AND `promo_code` = #{promoCode}</if>
+            <if test="discount != null">AND `discount` = #{discount}</if>
+        </where>
+    </sql>
+
+
+    <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_promo_code
+        where id = #{id}
+    </select>
+
+    <select id="findByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_promo_code
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="count" parameterType="com.bobabrewery.repo.common.domain.model.PromoCode" resultType="long">
+        select count(1)
+        from brewery_promo_code
+        <include refid="criteria"/>
+    </select>
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_promo_code
+        <where>
+            <if test="where.id != null">AND `id` = #{where.id}
+            </if>
+            <if test="where.promoCode != null">AND `promo_code` = #{where.promoCode}
+            </if>
+            <if test="where.discount != null">AND `discount` = #{where.discount}
+            </if>
+        </where>
+        order by `id` desc
+        <if test="page.startIndex != null and page.pageSize != null">
+            limit #{page.startIndex}, #{page.pageSize}
+        </if>
+    </select>
+    <select id="findByPromoCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_promo_code
+        where promo_code = #{promoCode}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete
+        from brewery_promo_code
+        where id = #{id}
+    </delete>
+
+    <insert id="create" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.PromoCode"
+            useGeneratedKeys="true">
+        insert into brewery_promo_code
+            (promo_code, discount)
+        values (#{promoCode}, #{discount})
+    </insert>
+
+    <insert id="creates" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.PromoCode"
+            useGeneratedKeys="true">
+        insert into brewery_promo_code
+        (promo_code,discount)
+        values
+        <foreach collection="list" item="i" index="index" separator=",">
+            (#{i.promoCode},#{i.discount})
+        </foreach>
+    </insert>
+
+    <insert id="createHas" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.PromoCode"
+            useGeneratedKeys="true">
+        insert into brewery_promo_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="promoCode != null">promo_code,</if>
+            <if test="discount != null">discount,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="promoCode != null">#{promoCode},</if>
+            <if test="discount != null">#{discount},</if>
+        </trim>
+    </insert>
+    <update id="updateByIdHas" parameterType="com.bobabrewery.repo.common.domain.model.PromoCode">
+        update brewery_promo_code
+        <set>
+            <if test="promoCode != null">
+                promo_code = #{promoCode},
+            </if>
+            <if test="discount != null">
+                discount = #{discount},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateById" parameterType="com.bobabrewery.repo.common.domain.model.PromoCode">
+        update brewery_promo_code
+        set promo_code = #{promoCode},
+            discount   = #{discount}
+        where id = #{id}
+    </update>
+</mapper>

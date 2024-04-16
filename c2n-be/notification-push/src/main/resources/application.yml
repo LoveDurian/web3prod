@@ -1,0 +1,44 @@
+server:
+    port: 31001
+
+spring:
+    mail:
+        configs:
+            -   host: email-smtp.ap-southeast-1.amazonaws.com
+                port: 465
+                username: AKIAVG5OF7CZHQCSI3N2
+                password: BAa2tfZzroIkWnDMPJu20gQmWn+9ZoHkzIr/78a6OkNN
+                properties:
+                    "mail.smtp.auth": true
+                    "mail.smtp.ssl.enable": true
+                    "mail.smtp.starttls.enable": true
+                    "mail.smtp.starttls.required": true
+                    "mail.imap.ssl.socketFactory.fallback": false
+                protocol: smtps
+                default-encoding: UTF-8
+
+            -   host: smtp.qq.com
+                port: 465
+                username: 825802844@qq.com
+                password: ycsoecguzvlebdbc
+                properties:
+                    "mail.smtp.auth": true
+                    "mail.smtp.ssl.enable": true
+                    "mail.smtp.starttls.enable": true
+                    "mail.smtp.starttls.required": true
+                    "mail.imap.ssl.socketFactory.fallback": false
+                protocol: smtps
+                default-encoding: UTF-8
+
+            -   host: smtp.exmail.qq.com
+                port: 465
+                username: do-not-reply@bobabrewery.com
+                password: A3Erug7xAUnZ9mkh
+                properties:
+                    "mail.smtp.auth": true
+                    "mail.smtp.ssl.enable": true
+                    "mail.smtp.starttls.enable": true
+                    "mail.smtp.starttls.required": true
+                    "mail.imap.ssl.socketFactory.fallback": false
+                protocol: smtps
+                default-encoding: UTF-8

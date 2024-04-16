@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds">
+    <!--使用springboot-logback默认配置-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+
+    <!--引用springboot的application.properties/yml中的属性-->
+    <springProperty scope="context" name="projectName" source="spring.application.name"/>
+    <springProperty scope="context" name="redisHost" source="spring.redis.host" defaultValue="127.0.0.1"/>
+    <springProperty scope="context" name="redisPort" source="spring.redis.port" defaultValue="6379"/>
+    <springProperty scope="context" name="redisPassword" source="spring.redis.password" defaultValue=""/>
+    <springProperty scope="context" name="redisDatabase" source="spring.redis.database" defaultValue=""/>
+
+    <!--输出日志到 Redis list-->
+    <appender name="REDIS" class="com.bobabrewery.common.logging.appender.RedisAppender">
+        <project>${projectName}</project>
+        <hostName>${redisHost}</hostName>
+        <port>${redisPort}</port>
+        <password>${redisPassword}</password>
+        <database>${redisDatabase}</database>
+    </appender>
+
+    <!--异步-->
+    <appender name="REDIS_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="REDIS"/>
+    </appender>
+
+    <!--开发环境日志策略 仅开启控制台日志-->
+    <springProfile name="dev">
+        <root level="info">
+            <!--开发环境暂时加上redis日志记录-->
+            <!--<appender-ref ref="REDIS_ASYNC"/>-->
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!--测试环境日志策略 控制台与Redis-->
+    <springProfile name="test">
+        <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+        <root level="info">
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="CONSOLE"/>
+            <!--<appender-ref ref="REDIS_ASYNC"/>-->
+        </root>
+    </springProfile>
+
+    <!--线上环境日志策略 日志文件与Redis-->
+    <springProfile name="prod">
+        <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+        <root level="info">
+            <appender-ref ref="FILE"/>
+            <!--<appender-ref ref="REDIS_ASYNC"/>-->
+        </root>
+    </springProfile>
+</configuration>

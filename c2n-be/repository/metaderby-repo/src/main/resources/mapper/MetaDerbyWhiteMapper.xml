@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.metaderby.mapper.MetaDerbyWhiteMapper">
+
+    <update id="update">
+        update brewery_meta_derby_white
+        set horses = #{horses}
+        where wallet_address = #{walletAddress}
+    </update>
+    <select id="findByWalletAddress" resultType="java.lang.Integer">
+        select horses
+        from brewery_meta_derby_white
+        where wallet_address = #{walletAddress}
+        limit 1
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+        select count(1)
+        from brewery_meta_derby_white
+        where horses > 0;
+    </select>
+    <select id="countByHorsesId" resultType="java.lang.Integer">
+        select count(1)
+        from brewery_meta_derby_white
+        where horses = #{horsesId}
+    </select>
+</mapper>

@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.ino.mapper.InoProjectMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.ino.domain.InoProject">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="subtitle" column="subTitle"/>
+        <result property="logo" column="logo"/>
+        <result property="publisherName" column="publisher_name"/>
+        <result property="publisherLogo" column="publisher_logo"/>
+        <result property="introduction" column="introduction"/>
+        <result property="steps" column="steps"/>
+        <result property="mintContract" column="mint_contract"/>
+        <result property="nftContract" column="nft_contract"/>
+        <result property="status" column="status"/>
+        <result property="totalQuantity" column="total_quantity"/>
+        <result property="currentPrice" column="current_price"/>
+        <result property="price" column="price"/>
+        <result property="medias" column="medias"/>
+        <result property="background" column="background"/>
+        <result property="chainId" column="chain_id"/>
+        <result property="expirationTime" column="expiration_time"/>
+        <result property="issueTime" column="issue_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,subTitle,
+        logo,publisher_name,publisher_logo,
+        introduction,steps,mint_contract,
+        nft_contract,status,total_quantity,
+        current_price,price,medias,
+        background,chain_id,expiration_time,
+        issue_time,create_time,update_time
+    </sql>
+
+    <sql id="criteria">
+        <where>
+            <if test="id != null">AND `id` = #{id}</if>
+            <if test="name != null">AND `name` = #{name}</if>
+            <if test="subtitle != null">AND `subTitle` = #{subtitle}</if>
+            <if test="logo != null">AND `logo` = #{logo}</if>
+            <if test="publisherName != null">AND `publisher_name` = #{publisherName}</if>
+            <if test="publisherLogo != null">AND `publisher_logo` = #{publisherLogo}</if>
+            <if test="introduction != null">AND `introduction` = #{introduction}</if>
+            <if test="steps != null">AND `steps` = #{steps}</if>
+            <if test="mintContract != null">AND `mint_contract` = #{mintContract}</if>
+            <if test="nftContract != null">AND `nft_contract` = #{nftContract}</if>
+            <if test="status != null">AND `status` = #{status}</if>
+            <if test="totalQuantity != null">AND `total_quantity` = #{totalQuantity}</if>
+            <if test="currentPrice != null">AND `current_price` = #{currentPrice}</if>
+            <if test="price != null">AND `price` = #{price}</if>
+            <if test="medias != null">AND `medias` = #{medias}</if>
+            <if test="background != null">AND `background` = #{background}</if>
+            <if test="chainId != null">AND `chain_id` = #{chainId}</if>
+            <if test="expirationTime != null">AND `expiration_time` = #{expirationTime}</if>
+            <if test="issueTime != null">AND `issue_time` = #{issueTime}</if>
+            <if test="createTime != null">AND `create_time` = #{createTime}</if>
+            <if test="updateTime != null">AND `update_time` = #{updateTime}</if>
+        </where>
+    </sql>
+
+
+    <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_ino_project
+        where id = #{id}
+    </select>
+
+    <select id="findByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_ino_project
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="count" parameterType="com.bobabrewery.repo.ino.domain.InoProject" resultType="long">
+        select count(1)
+        from brewery_ino_project
+        <include refid="criteria"/>
+    </select>
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_ino_project
+        <where>
+            <if test="where.id != null">AND `id` = #{where.id}
+            </if>
+            <if test="where.name != null">AND `name` = #{where.name}
+            </if>
+            <if test="where.subtitle != null">AND `subTitle` = #{where.subtitle}
+            </if>
+            <if test="where.logo != null">AND `logo` = #{where.logo}
+            </if>
+            <if test="where.publisherName != null">AND `publisher_name` = #{where.publisherName}
+            </if>
+            <if test="where.publisherLogo != null">AND `publisher_logo` = #{where.publisherLogo}
+            </if>
+            <if test="where.introduction != null">AND `introduction` = #{where.introduction}
+            </if>
+            <if test="where.steps != null">AND `steps` = #{where.steps}
+            </if>
+            <if test="where.mintContract != null">AND `mint_contract` = #{where.mintContract}
+            </if>
+            <if test="where.nftContract != null">AND `nft_contract` = #{where.nftContract}
+            </if>
+            <if test="where.status != null">AND `status` = #{where.status}
+            </if>
+            <if test="where.totalQuantity != null">AND `total_quantity` = #{where.totalQuantity}
+            </if>
+            <if test="where.currentPrice != null">AND `current_price` = #{where.currentPrice}
+            </if>
+            <if test="where.price != null">AND `price` = #{where.price}
+            </if>
+            <if test="where.medias != null">AND `medias` = #{where.medias}
+            </if>
+            <if test="where.background != null">AND `background` = #{where.background}
+            </if>
+            <if test="where.chainId != null">AND `chain_id` = #{where.chainId}
+            </if>
+            <if test="where.expirationTime != null">AND `expiration_time` = #{where.expirationTime}
+            </if>
+            <if test="where.issueTime != null">AND `issue_time` = #{where.issueTime}
+            </if>
+            <if test="where.createTime != null">AND `create_time` = #{where.createTime}
+            </if>
+            <if test="where.updateTime != null">AND `update_time` = #{where.updateTime}
+            </if>
+        </where>
+        order by `id` desc
+        <if test="page.startIndex != null and page.pageSize != null">
+            limit #{page.startIndex}, #{page.pageSize}
+        </if>
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete
+        from brewery_ino_project
+        where id = #{id}
+    </delete>
+
+    <insert id="create" keyColumn="id" keyProperty="id" parameterType="com.bobabrewery.repo.ino.domain.InoProject"
+            useGeneratedKeys="true">
+        insert into brewery_ino_project
+        (name, subTitle, logo, publisher_name, publisher_logo, introduction, steps, mint_contract, nft_contract, status,
+         total_quantity, current_price, price, medias, background, chain_id, expiration_time, issue_time, update_time)
+        values (#{name}, #{subtitle}, #{logo}, #{publisherName}, #{publisherLogo}, #{introduction}, #{steps},
+                #{mintContract}, #{nftContract}, #{status}, #{totalQuantity}, #{currentPrice}, #{price}, #{medias},
+                #{background}, #{chainId}, #{expirationTime}, #{issueTime}, #{updateTime})
+    </insert>
+
+    <insert id="creates" keyColumn="id" keyProperty="id" parameterType="com.bobabrewery.repo.ino.domain.InoProject"
+            useGeneratedKeys="true">
+        insert into brewery_ino_project
+        (name,subTitle,logo,publisher_name,publisher_logo,introduction,steps,mint_contract,nft_contract,status,total_quantity,current_price,price,medias,background,chain_id,expiration_time,issue_time,update_time)
+        values
+        <foreach collection="list" item="i" index="index" separator=",">
+            (#{i.name},#{i.subtitle},#{i.logo},#{i.publisherName},#{i.publisherLogo},#{i.introduction},#{i.steps},#{i.mintContract},#{i.nftContract},#{i.status},#{i.totalQuantity},#{i.currentPrice},#{i.price},#{i.medias},#{i.background},#{i.chainId},#{i.expirationTime},#{i.issueTime},#{i.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="createHas" keyColumn="id" keyProperty="id" parameterType="com.bobabrewery.repo.ino.domain.InoProject"
+            useGeneratedKeys="true">
+        insert into brewery_ino_project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="subtitle != null">subTitle,</if>
+            <if test="logo != null">logo,</if>
+            <if test="publisherName != null">publisher_name,</if>
+            <if test="publisherLogo != null">publisher_logo,</if>
+            <if test="introduction != null">introduction,</if>
+            <if test="steps != null">steps,</if>
+            <if test="mintContract != null">mint_contract,</if>
+            <if test="nftContract != null">nft_contract,</if>
+            <if test="status != null">status,</if>
+            <if test="totalQuantity != null">total_quantity,</if>
+            <if test="currentPrice != null">current_price,</if>
+            <if test="price != null">price,</if>
+            <if test="medias != null">medias,</if>
+            <if test="background != null">background,</if>
+            <if test="chainId != null">chain_id,</if>
+            <if test="expirationTime != null">expiration_time,</if>
+            <if test="issueTime != null">issue_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="subtitle != null">#{subtitle},</if>
+            <if test="logo != null">#{logo},</if>
+            <if test="publisherName != null">#{publisherName},</if>
+            <if test="publisherLogo != null">#{publisherLogo},</if>
+            <if test="introduction != null">#{introduction},</if>
+            <if test="steps != null">#{steps},</if>
+            <if test="mintContract != null">#{mintContract},</if>
+            <if test="nftContract != null">#{nftContract},</if>
+            <if test="status != null">#{status},</if>
+            <if test="totalQuantity != null">#{totalQuantity},</if>
+            <if test="currentPrice != null">#{currentPrice},</if>
+            <if test="price != null">#{price},</if>
+            <if test="medias != null">#{medias},</if>
+            <if test="background != null">#{background},</if>
+            <if test="chainId != null">#{chainId},</if>
+            <if test="expirationTime != null">#{expirationTime},</if>
+            <if test="issueTime != null">#{issueTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+    <update id="updateByIdHas" parameterType="com.bobabrewery.repo.ino.domain.InoProject">
+        update brewery_ino_project
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="subtitle != null">
+                subTitle = #{subtitle},
+            </if>
+            <if test="logo != null">
+                logo = #{logo},
+            </if>
+            <if test="publisherName != null">
+                publisher_name = #{publisherName},
+            </if>
+            <if test="publisherLogo != null">
+                publisher_logo = #{publisherLogo},
+            </if>
+            <if test="introduction != null">
+                introduction = #{introduction},
+            </if>
+            <if test="steps != null">
+                steps = #{steps},
+            </if>
+            <if test="mintContract != null">
+                mint_contract = #{mintContract},
+            </if>
+            <if test="nftContract != null">
+                nft_contract = #{nftContract},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="totalQuantity != null">
+                total_quantity = #{totalQuantity},
+            </if>
+            <if test="currentPrice != null">
+                current_price = #{currentPrice},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="medias != null">
+                medias = #{medias},
+            </if>
+            <if test="background != null">
+                background = #{background},
+            </if>
+            <if test="chainId != null">
+                chain_id = #{chainId},
+            </if>
+            <if test="expirationTime != null">
+                expiration_time = #{expirationTime},
+            </if>
+            <if test="issueTime != null">
+                issue_time = #{issueTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateById" parameterType="com.bobabrewery.repo.ino.domain.InoProject">
+        update brewery_ino_project
+        set name            = #{name},
+            subTitle        = #{subtitle},
+            logo            = #{logo},
+            publisher_name  = #{publisherName},
+            publisher_logo  = #{publisherLogo},
+            introduction    = #{introduction},
+            steps           = #{steps},
+            mint_contract   = #{mintContract},
+            nft_contract    = #{nftContract},
+            status          = #{status},
+            total_quantity  = #{totalQuantity},
+            current_price   = #{currentPrice},
+            price           = #{price},
+            medias          = #{medias},
+            background      = #{background},
+            chain_id        = #{chainId},
+            expiration_time = #{expirationTime},
+            issue_time      = #{issueTime},
+            create_time     = #{createTime},
+            update_time     = #{updateTime}
+        where id = #{id}
+    </update>
+</mapper>

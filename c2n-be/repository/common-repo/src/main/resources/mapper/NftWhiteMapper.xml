@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.common.mapper.NftWhiteMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.common.domain.model.NFTWhite">
+        <id property="id" column="id"/>
+        <result property="walletAddress" column="wallet_address"/>
+        <result property="amount" column="amount"/>
+        <result property="usageCodeId" column="usage_code_id"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,wallet_address,amount,
+        usage_code_id,status
+    </sql>
+
+    <sql id="criteria">
+        <where>
+            <if test="id != null">AND `id` = #{id}</if>
+            <if test="walletAddress != null">AND `wallet_address` = #{walletAddress}</if>
+            <if test="amount != null">AND `amount` = #{amount}</if>
+            <if test="usageCodeId != null">AND `usage_code_id` = #{usageCodeId}</if>
+            <if test="status != null">AND `status` = #{status}</if>
+        </where>
+    </sql>
+
+
+    <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_nft_white
+        where id = #{id}
+    </select>
+
+    <select id="findByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_nft_white
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="count" parameterType="com.bobabrewery.repo.common.domain.model.NFTWhite" resultType="long">
+        select count(1)
+        from brewery_nft_white
+        <include refid="criteria"/>
+    </select>
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_nft_white
+        <where>
+            <if test="where.id != null">AND `id` = #{where.id}
+            </if>
+            <if test="where.walletAddress != null">AND `wallet_address` = #{where.walletAddress}
+            </if>
+            <if test="where.amount != null">AND `amount` = #{where.amount}
+            </if>
+            <if test="where.usageCodeId != null">AND `usage_code_id` = #{where.usageCodeId}
+            </if>
+            <if test="where.status != null">AND `status` = #{where.status}
+            </if>
+        </where>
+        order by `id` desc
+        <if test="page.startIndex != null and page.pageSize != null">
+            limit #{page.startIndex}, #{page.pageSize}
+        </if>
+    </select>
+    <select id="findByWalletAddress" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_nft_white
+        where wallet_address = #{walletAddress}
+    </select>
+    <select id="exist" resultType="java.lang.Integer">
+        select count(1)
+        from brewery_nft_white
+        where wallet_address = #{walletAddress}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete
+        from brewery_nft_white
+        where id = #{id}
+    </delete>
+
+    <insert id="create" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.NFTWhite"
+            useGeneratedKeys="true">
+        insert into brewery_nft_white
+            (wallet_address, amount, usage_code_id, status)
+        values (#{walletAddress}, #{amount}, #{usageCodeId}, #{status})
+    </insert>
+
+    <insert id="creates" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.NFTWhite"
+            useGeneratedKeys="true">
+        insert into brewery_nft_white
+        (wallet_address,amount,usage_code_id,status)
+        values
+        <foreach collection="list" item="i" index="index" separator=",">
+            (#{i.walletAddress},#{i.amount},#{i.usageCodeId},#{i.status})
+        </foreach>
+    </insert>
+
+    <insert id="createHas" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.NFTWhite"
+            useGeneratedKeys="true">
+        insert into brewery_nft_white
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="walletAddress != null">wallet_address,</if>
+            <if test="amount != null">amount,</if>
+            <if test="usageCodeId != null">usage_code_id,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="walletAddress != null">#{walletAddress},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="usageCodeId != null">#{usageCodeId},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+    </insert>
+    <update id="updateByIdHas" parameterType="com.bobabrewery.repo.common.domain.model.NFTWhite">
+        update brewery_nft_white
+        <set>
+            <if test="walletAddress != null">
+                wallet_address = #{walletAddress},
+            </if>
+            <if test="amount != null">
+                amount = #{amount},
+            </if>
+            <if test="usageCodeId != null">
+                usage_code_id = #{usageCodeId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateById" parameterType="com.bobabrewery.repo.common.domain.model.NFTWhite">
+        update brewery_nft_white
+        set wallet_address = #{walletAddress},
+            amount         = #{amount},
+            usage_code_id  = #{usageCodeId},
+            status         = #{status}
+        where id = #{id}
+    </update>
+</mapper>

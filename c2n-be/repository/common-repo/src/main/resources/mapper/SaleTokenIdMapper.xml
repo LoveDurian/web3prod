@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.common.mapper.SaleTokenIdMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.common.domain.model.SaleTokenId">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="tokenId" column="token_id" jdbcType="BIGINT"/>
+        <result property="txId" column="tx_id" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="walletAddress" column="wallet_address" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <update id="callBackTxId">
+        update brewery_sale_token_ids
+        set tx_id          = #{txId},
+            status        = #{status},
+            wallet_address=#{walletAddress}
+        where token_id = ${tokenId}
+    </update>
+
+    <update id="updateStatusByTxId">
+        update brewery_sale_token_ids
+        set status = #{status}
+        where tx_id = #{txId}
+    </update>
+    <update id="update">
+        update brewery_sale_token_ids
+        set tx_id          = #{txId},
+            status        = #{status},
+            wallet_address=#{walletAddress}
+        where token_id = #{tokenID}
+    </update>
+    <select id="findTokenIdList" resultType="java.lang.Long">
+        select token_id
+        from brewery_sale_token_ids where  status = 0
+    </select>
+
+    <select id="findByStatusLimit1" resultType="java.lang.Long">
+        select token_id from brewery_sale_token_ids where token_id > #{max} and  status = 0 limit #{len}
+    </select>
+</mapper>

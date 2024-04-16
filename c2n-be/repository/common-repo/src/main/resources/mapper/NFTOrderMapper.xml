@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bobabrewery.repo.common.mapper.NFTOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.bobabrewery.repo.common.domain.model.NFTOrder">
+        <id property="orderId" column="order_id"/>
+        <result property="walletAddress" column="wallet_address"/>
+        <result property="usageCodeId" column="usage_code_id"/>
+        <result property="amount" column="amount"/>
+        <result property="actualPrice" column="actual_price"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        order_id,wallet_address,usage_code_id,
+        amount,actual_price,create_time,
+        update_time,status
+    </sql>
+
+    <sql id="criteria">
+        <where>
+            <if test="orderId != null">AND `order_id` = #{orderId}</if>
+            <if test="walletAddress != null">AND `wallet_address` = #{walletAddress}</if>
+            <if test="usageCodeId != null">AND `usage_code_id` = #{usageCodeId}</if>
+            <if test="amount != null">AND `amount` = #{amount}</if>
+            <if test="actualPrice != null">AND `actual_price` = #{actualPrice}</if>
+            <if test="createTime != null">AND `create_time` = #{createTime}</if>
+            <if test="updateTime != null">AND `update_time` = #{updateTime}</if>
+            <if test="status != null">AND `status` = #{status}</if>
+        </where>
+    </sql>
+
+
+    <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_nft_order
+        where order_id = #{orderId}
+    </select>
+
+    <select id="findByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_nft_order
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="count" parameterType="com.bobabrewery.repo.common.domain.model.NFTOrder" resultType="long">
+        select count(1)
+        from brewery_nft_order
+        <include refid="criteria"/>
+    </select>
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from brewery_nft_order
+        <where>
+            <if test="where.orderId != null">AND `order_id` = #{where.orderId}
+            </if>
+            <if test="where.walletAddress != null">AND `wallet_address` = #{where.walletAddress}
+            </if>
+            <if test="where.usageCodeId != null">AND `usage_code_id` = #{where.usageCodeId}
+            </if>
+            <if test="where.amount != null">AND `amount` = #{where.amount}
+            </if>
+            <if test="where.actualPrice != null">AND `actual_price` = #{where.actualPrice}
+            </if>
+            <if test="where.createTime != null">AND `create_time` = #{where.createTime}
+            </if>
+            <if test="where.updateTime != null">AND `update_time` = #{where.updateTime}
+            </if>
+            <if test="where.status != null">AND `status` = #{where.status}
+            </if>
+        </where>
+        order by `id` desc
+        <if test="page.startIndex != null and page.pageSize != null">
+            limit #{page.startIndex}, #{page.pageSize}
+        </if>
+    </select>
+
+    <select id="findByWalletAddress" resultType="java.lang.Long">
+        select amount
+        from brewery_nft_order
+        where status = 1
+          and wallet_address = #{walletAddress}
+          and pid = 3
+        limit 1
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete
+        from brewery_nft_order
+        where order_id = #{orderId}
+    </delete>
+
+    <insert id="create" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.NFTOrder"
+            useGeneratedKeys="true">
+        insert into brewery_nft_order
+        (wallet_address, usage_code_id, amount, actual_price, update_time, status)
+        values (#{walletAddress}, #{usageCodeId}, #{amount}, #{actualPrice}, #{updateTime}, #{status})
+    </insert>
+
+    <insert id="creates" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.NFTOrder"
+            useGeneratedKeys="true">
+        insert into brewery_nft_order
+        (order_id,wallet_address,usage_code_id,amount,actual_price)
+        values
+        <foreach collection="list" item="i" index="index" separator=",">
+            (#{i.orderId},#{i.walletAddress},#{i.usageCodeId},#{i.amount},#{i.actualPrice})
+        </foreach>
+    </insert>
+
+    <insert id="createHas" keyColumn="id" keyProperty="id"
+            parameterType="com.bobabrewery.repo.common.domain.model.NFTOrder"
+            useGeneratedKeys="true">
+        insert into brewery_nft_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="pid != null">pid,</if>
+            <if test="walletAddress != null">wallet_address,</if>
+            <if test="usageCodeId != null">usage_code_id,</if>
+            <if test="amount != null">amount,</if>
+            <if test="actualPrice != null">actual_price,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="pid != null">#{pid},</if>
+            <if test="walletAddress != null">#{walletAddress},</if>
+            <if test="usageCodeId != null">#{usageCodeId},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="actualPrice != null">#{actualPrice},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+    </insert>
+    <update id="updateByIdHas" parameterType="com.bobabrewery.repo.common.domain.model.NFTOrder">
+        update brewery_nft_order
+        <set>
+            <if test="walletAddress != null">
+                wallet_address = #{walletAddress},
+            </if>
+            <if test="usageCodeId != null">
+                usage_code_id = #{usageCodeId},
+            </if>
+            <if test="amount != null">
+                amount = #{amount},
+            </if>
+            <if test="actualPrice != null">
+                actual_price = #{actualPrice},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where order_id = #{orderId}
+    </update>
+    <update id="updateById" parameterType="com.bobabrewery.repo.common.domain.model.NFTOrder">
+        update brewery_nft_order
+        set wallet_address = #{walletAddress},
+            usage_code_id  = #{usageCodeId},
+            amount         = #{amount},
+            actual_price   = #{actualPrice},
+            create_time    = #{createTime},
+            update_time    = #{updateTime},
+            status         = #{status}
+        where order_id = #{orderId}
+    </update>
+</mapper>
