@@ -291,7 +291,7 @@ function withdraw(uint256 _pid, uint256 _amount) public {
 }
 ```
 
-## 任务五：紧急提款和奖励分配
+## 任务六：紧急提款和奖励分配
 1. 实现紧急提款功能（emergencyWithdraw函数）：
   - 让用户在紧急情况下提取他们的LP代币，但不获取奖励。
 2. 实现ERC20代币转移的内部函数（erc20Transfer）：
@@ -315,10 +315,10 @@ function erc20Transfer(address _to, uint256 _amount) internal {
     paidOut += _amount;
 }
 ```
-## 任务六：合约测试和部署
+## 任务七：合约测试和部署
 1. 编写测试用例：
   - 使用如Truffle或Hardhat的框架进行合约测试。
-2. 部署合约到测试网络（如Ropsten或Rinkeby）：
+2. 部署合约到测试网络（Sepolia）：
   - 学习如何在公共测试网络上部署和管理智能合约。
 
 任务七：前端集成和交互
