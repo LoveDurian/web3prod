@@ -99,46 +99,238 @@ WIP
 
 # 学员任务
 为了帮助学员逐步完成以太坊智能合约C2N Launchpad开发的学习任务，下面我将根据合约代码，拆分出一系列循序渐进的开发任务，并提供详细的文档。这将帮助学员理解并实践如何构建一个基于以太坊的农场合约（Farming contract），用于分配基于用户质押的流动性证明（LP tokens）的ERC20代币奖励。
-## 开发任务拆分
-### 任务一：了解基础合约和库的使用
+
+## 概述
+FarmingC2N合约是一个基于以太坊的智能合约，主要用于管理和分发基于用户质押的流动性证明(LP)代币的ERC20奖励。该合约允许用户存入LP代币，并根据质押的数量和时间来计算和分发ERC20类型的奖励。
+开发任务拆分
+## 任务一：了解基础合约和库的使用
 1. 阅读和理解OpenZeppelin库的文档：熟悉IERC20、SafeERC20、SafeMath、Ownable这些库的功能和用途。
-2. 创建基础智能合约结构：根据给定的智能合约代码，理解合约结构和主要变量的定义。
-### 任务二：用户和池子信息结构定义
+2. 创建基础智能合约结构：根据openZeppelin 库，导入上述合约。
+## 任务二：用户和池子信息结构定义
 1. 定义用户信息结构（UserInfo）：
   - 学习如何在Solidity中定义结构体。
-  - 添加注释，解释每个字段的含义。
+  - 定义uint256类型的 amount,和uint256 rewardDebt字段
+在后续实现中会根据用户信息进行一些数学计算。
+```
+说明：在任何时间点，用户获得但还尚未分配的 ERC20 数量为：
+pendingReward = (user.amount * pool.accERC20PerShare) - user.rewardDebt
+每当用户向池中存入或提取 LP 代币时，会发生以下情况：
+1. 更新池的 `accERC20PerShare`（和 `lastRewardBlock`）。
+2. 用户收到发送到其地址的待分配奖励。
+3. 用户的 `amount` 被更新。
+4. 用户的 `rewardDebt` 被更新。
+```
 2. 定义池子信息结构（PoolInfo）：
   - 理解并定义池子信息，包括LP代币地址、分配点、最后奖励时间戳等。
-### 任务三：合约构造函数和池子管理
+
+参考答案：
+```
+struct UserInfo {
+    uint256 amount;  
+    uint256 rewardDebt; 
+}
+struct PoolInfo {
+    IERC20 lpToken;             // Address of LP token contract.
+    uint256 allocPoint;         // How many allocation points assigned to this pool. ERC20s to distribute per block.
+    uint256 lastRewardTimestamp;    // Last timstamp that ERC20s distribution occurs.
+    uint256 accERC20PerShare;   // Accumulated ERC20s per share, times 1e36.
+    uint256 totalDeposits; // Total amount of tokens deposited at the moment (staked)
+}
+```
+
+
+## 任务三：合约构造函数和池子管理
+首先我们先定义一些状态变量
+- erc20：代表ERC20奖励代币的合约地址。
+- rewardPerSecond：每秒产生的ERC20代币奖励数量。
+- totalAllocPoint：所有矿池的分配点总和。
+- poolInfo：所有矿池的数组。
+- userInfo：记录每个用户在每个矿池中的信息。
+- startTimestamp和endTimestamp：奖励开始和结束的时间戳。
+- paidOut：已经支付的奖励总额。
+- totalRewards：总的奖励额。
 1. 编写合约的构造函数：
   - 初始化ERC20代币地址、奖励生成速率和起始时间戳。
 2. 实现添加新的LP池子的功能（add函数）：
+  - 按照poolInfo的结构，添加一个pool，并指定是否需要批量update合约资金信息
+  - 注意判断lastRewardTimestamp逻辑，如果大于startTimestamp，则为当前块高时间，否则还未开始发放奖励，设置为startTimestamp
   - 学习权限管理，确保只有合约拥有者可以添加池子。
-### 任务四：奖励机制的实现
-1. 编写更新单个池子奖励的函数（updatePool）：
-  - 理解如何计算每个池子的累计ERC20代币每股份额。
-2. 实现用户存入和提取LP代币的功能（deposit和withdraw函数）：
+
+参考答案：
+```
+constructor(IERC20 _erc20, uint256 _rewardPerSecond, uint256 _startTimestamp) public {
+    erc20 = _erc20;
+    rewardPerSecond = _rewardPerSecond;
+    startTimestamp = _startTimestamp;
+    endTimestamp = _startTimestamp;
+}
+
+function add(uint256 _allocPoint, IERC20 _lpToken, bool _withUpdate) public onlyOwner {
+    if (_withUpdate) {
+        massUpdatePools();
+    }
+    uint256 lastRewardTimestamp = block.timestamp > startTimestamp ? block.timestamp : startTimestamp;
+    totalAllocPoint = totalAllocPoint.add(_allocPoint);
+    poolInfo.push(PoolInfo({
+    lpToken : _lpToken,
+    allocPoint : _allocPoint,
+    lastRewardTimestamp : lastRewardTimestamp,
+    accERC20PerShare : 0,
+    totalDeposits : 0
+    }));
+}
+```
+
+## 任务四：fund功能实现
+合约的所有者或授权用户可以通过此函数向合约注入ERC20代币，以延长奖励分发时间。
+需求：
+1. 确保合约在当前时间点仍可接收资金，即未超过奖励结束时间
+2. 从调用者账户向合约账户安全转移指定数量的ERC20代币
+3.  根据注入的资金量和每秒奖励数量，计算并延长奖励发放的结束时间
+4.  更新合约记录的总奖励量
+参考答案
+```
+function fund(uint256 _amount) public {
+    require(block.timestamp < endTimestamp, "fund: too late, the farm is closed");
+    erc20.safeTransferFrom(address(msg.sender), address(this), _amount);
+    endTimestamp += _amount.div(rewardPerSecond);
+    totalRewards = totalRewards.add(_amount);
+}
+```
+
+## 任务五：核心功能开发，奖励机制的实现
+编写更新单个池子奖励的函数（updatePool）：
+- 理解如何计算每个池子的累计ERC20代币每股份额。
+- 需求说明: 该函数主要功能是确保矿池的奖励数据是最新的，并根据最新数据更新矿池的状态，需要实现以下功能：
+  1. 更新矿池的奖励变量
+  updatePool需要针对指定的矿池ID更新矿池中的关键奖励变量，确保其反映了最新的奖励情况。这包括：
+  - 更新最后奖励时间戳： 如果池子还未结束，将矿池的lastRewardTimestamp更新为当前时间戳，以确保奖励的计算与时间同步，否则lastRewardTimestamp = endTimestamp
+  - 计算新增的奖励：根据从上次奖励时间到现在的时间差，结合矿池的分配点数和全局的每秒奖励率，计算此期间应该新增的ERC20奖励量。
+  2. 累加每股累积奖励
+  根据新计算出的奖励量，更新矿池的accERC20PerShare（每股累积ERC20奖励）：
+  - 奖励分配：将新增的奖励量按照矿池中当前LP代币的总量（totalDeposits）进行分配，计算出每份LP代币所能获得的奖励，并更新accERC20PerShare。
+  3. 确保时间和奖励的正确性
+  处理边界条件，确保在计算奖励时，各种时间点和奖励量的处理是合理和正确的：
+  - 时间边界处理：如果当前时间已经超过了奖励分配的结束时间（endTimestamp），则需要相应调整逻辑以防止奖励超发。
+  - LP代币总量检查：如果矿池中没有LP代币（totalDeposits为0），则不进行奖励计算，直接更新时间戳。
+参考实现：
+```
+function updatePool(uint256 _pid) public {
+    PoolInfo storage pool = poolInfo[_pid];
+    uint256 lastTimestamp = block.timestamp < endTimestamp ? block.timestamp : endTimestamp;
+
+    if (lastTimestamp <= pool.lastRewardTimestamp) {
+        return;
+    }
+    uint256 lpSupply = pool.totalDeposits;
+
+    if (lpSupply == 0) {
+        pool.lastRewardTimestamp = lastTimestamp;
+        return;
+    }
+
+    uint256 nrOfSeconds = lastTimestamp.sub(pool.lastRewardTimestamp);
+    uint256 erc20Reward = nrOfSeconds.mul(rewardPerSecond).mul(pool.allocPoint).div(totalAllocPoint);
+
+    pool.accERC20PerShare = pool.accERC20PerShare.add(erc20Reward.mul(1e36).div(lpSupply));
+    pool.lastRewardTimestamp = block.timestamp;
+}
+```
+1. 实现用户存入和提取LP代币的功能（deposit和withdraw函数）：
   - 理解如何更新用户的amount和rewardDebt。
-### 任务五：紧急提款和奖励分配
+    - Deposit: 函数允许用户将LP代币存入指定的矿池，以参与ERC20代币的分配。
+      - 更新矿池奖励数据：调用updatePool函数，保证矿池数据是最新的，确保奖励计算的正确性。
+      - 计算并发放挂起的奖励：如果用户已有存款，则计算用户从上次存款后到现在的挂起奖励，并通过erc20Transfer发放这些奖励。
+      - 接收用户存款：通过safeTransferFrom函数，从用户账户安全地转移LP代币到合约地址。
+      - 更新用户存款数据：更新用户在该矿池的存款总额和奖励债务，为下次奖励计算做准备。
+      - 记录事件：发出Deposit事件，记录此次存款操作的详细信息。
+    - Withdraw
+      - 更新矿池奖励数据：调用updatePool函数更新矿池的奖励变量，确保奖励的准确性。
+      - 计算并发放挂起的奖励：计算用户应得的挂起奖励，并通过erc20Transfer将奖励发放给用户。
+      - 提取LP代币：安全地将用户请求的LP代币数量从合约转移到用户账户。
+      - 更新用户存款数据：更新用户的存款总额和奖励债务，准确记录用户的新状态。
+      - 记录事件：发出Withdraw事件，记录此次提款操作的详细信息。
+参考答案：
+```
+// Deposit LP tokens to Farm for ERC20 allocation.
+function deposit(uint256 _pid, uint256 _amount) public {
+    PoolInfo storage pool = poolInfo[_pid];
+    UserInfo storage user = userInfo[_pid][msg.sender];
+
+    updatePool(_pid);
+
+    if (user.amount > 0) {
+        uint256 pendingAmount = user.amount.mul(pool.accERC20PerShare).div(1e36).sub(user.rewardDebt);
+        erc20Transfer(msg.sender, pendingAmount);
+    }
+
+    pool.lpToken.safeTransferFrom(address(msg.sender), address(this), _amount);
+    pool.totalDeposits = pool.totalDeposits.add(_amount);
+
+    user.amount = user.amount.add(_amount);
+    user.rewardDebt = user.amount.mul(pool.accERC20PerShare).div(1e36);
+    emit Deposit(msg.sender, _pid, _amount);
+}
+
+// Withdraw LP tokens from Farm.
+function withdraw(uint256 _pid, uint256 _amount) public {
+    PoolInfo storage pool = poolInfo[_pid];
+    UserInfo storage user = userInfo[_pid][msg.sender];
+    require(user.amount >= _amount, "withdraw: can't withdraw more than deposit");
+    updatePool(_pid);
+
+    uint256 pendingAmount = user.amount.mul(pool.accERC20PerShare).div(1e36).sub(user.rewardDebt);
+
+    erc20Transfer(msg.sender, pendingAmount);
+    user.amount = user.amount.sub(_amount);
+    user.rewardDebt = user.amount.mul(pool.accERC20PerShare).div(1e36);
+    pool.lpToken.safeTransfer(address(msg.sender), _amount);
+    pool.totalDeposits = pool.totalDeposits.sub(_amount);
+
+    emit Withdraw(msg.sender, _pid, _amount);
+}
+```
+
+## 任务五：紧急提款和奖励分配
 1. 实现紧急提款功能（emergencyWithdraw函数）：
   - 让用户在紧急情况下提取他们的LP代币，但不获取奖励。
 2. 实现ERC20代币转移的内部函数（erc20Transfer）：
   - 确保奖励正确支付给用户。
-### 任务六：合约测试和部署
+参考答案：
+```
+// Withdraw without caring about rewards. EMERGENCY ONLY.
+function emergencyWithdraw(uint256 _pid) public {
+    PoolInfo storage pool = poolInfo[_pid];
+    UserInfo storage user = userInfo[_pid][msg.sender];
+    pool.lpToken.safeTransfer(address(msg.sender), user.amount);
+    pool.totalDeposits = pool.totalDeposits.sub(user.amount);
+    emit EmergencyWithdraw(msg.sender, _pid, user.amount);
+    user.amount = 0;
+    user.rewardDebt = 0;
+}
+
+// Transfer ERC20 and update the required ERC20 to payout all rewards
+function erc20Transfer(address _to, uint256 _amount) internal {
+    erc20.transfer(_to, _amount);
+    paidOut += _amount;
+}
+```
+## 任务六：合约测试和部署
 1. 编写测试用例：
   - 使用如Truffle或Hardhat的框架进行合约测试。
 2. 部署合约到测试网络（如Ropsten或Rinkeby）：
   - 学习如何在公共测试网络上部署和管理智能合约。
-### 任务七：前端集成和交互
+
+任务七：前端集成和交互
 1. 开发一个简单的前端应用：
   - 使用Web3.js或Ethers.js与智能合约交互。
 2. 实现用户界面：
   - 允许用户通过网页界面存入、提取LP代币，查看待领取奖励。
 
-## 任务重难点分析
+# 任务重难点分析
 
 在上述的智能合约代码中，奖励机制的核心功能围绕着分配ERC20代币给在不同流动性提供池（LP pools）中质押LP代币的用户。这个过程涉及多个关键步骤和计算，用以确保每个用户根据其质押的LP代币数量公平地获得ERC20代币奖励。下面将详细解释这个奖励机制的实现过程。
-### 奖励计算原理
+## 奖励计算原理
 1. 用户信息（UserInfo）和池子信息（PoolInfo）：
   - UserInfo 结构存储了用户在特定池子中质押的LP代币数量（amount）和奖励债务（rewardDebt）。奖励债务表示在最后一次处理后，用户已经计算过但尚未领取的奖励数量。
   - PoolInfo 结构包含了该池子的信息，如LP代币地址、分配点（用于计算该池子在总奖励中的比例）、最后一次奖励时间戳、累计每股分配的ERC20代币数（accERC20PerShare）等。
@@ -150,7 +342,11 @@ WIP
   - 当用户调用deposit或withdraw函数时，合约首先计算用户在这次操作前的待领取奖励。
   - 待领取奖励是通过将用户质押的LP代币数量乘以池子的accERC20PerShare，然后减去用户的rewardDebt来计算的。这样可以得到自上次用户更新以来所产生的新奖励。
   - 用户完成操作后，其amount（如果是存款则增加，如果是提款则减少）和rewardDebt都将更新。新的rewardDebt是用户更新后的LP代币数量乘以最新的accERC20PerShare。
-### 奖励发放
+## 奖励发放
 - 在用户进行提款（withdraw）操作时，计算的待领取奖励会通过erc20Transfer函数直接发送到用户的地址。
 - 这种奖励分配机制确保了用户每次质押状态变更时，都会根据其质押的时间和数量公平地获得相应的ERC20代币奖励。
 通过这种设计，智能合约能够高效且公平地管理多个LP池子中的奖励分配，使得用户对质押LP代币和领取奖励的过程感到透明和公正。
+
+
+# InComing
+AllocationStaking和c2nSale 正在开发中。。。
