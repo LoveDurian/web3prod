@@ -211,7 +211,7 @@ create table `twitter_task`
 ) engine = InnoDB
   default charset = utf8mb4;
 
-CREATE TABLE `outdata_user`
+CREATE TABLE `user_info`
 (
     `id`             int(8)    unsigned primary key auto_increment NOT NULL COMMENT '用户ID',
     `account_id`     varchar(42)                                   NOT NULL comment '用户的钱包地址',
