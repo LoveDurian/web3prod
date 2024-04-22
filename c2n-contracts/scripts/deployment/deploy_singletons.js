@@ -78,6 +78,8 @@ async function main() {
 
     console.log("ready to fund 500000 token for testing")
     // Fund only 50000 tokens, for testing
+    // sleep(5000)
+    await sleep(5000)
     await allocationStaking.fund(ethers.utils.parseEther('500000'));
     console.log('Funded 500000 tokens')
 
