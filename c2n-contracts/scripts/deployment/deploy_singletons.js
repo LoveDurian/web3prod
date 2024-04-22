@@ -9,6 +9,12 @@ async function getCurrentBlockTimestamp() {
     return (await ethers.provider.getBlock('latest')).timestamp;
 }
 
+async function sleep(number) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, number);
+    });
+}
+
 async function main() {
 
     const c = config[hre.network.name];
