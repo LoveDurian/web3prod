@@ -12,9 +12,9 @@
 node 版本：v18.19.1
 
 部署流程
-1. `npx hardhat run --network localhost scripts/deployment/deploy_boba_token.js`
-2. `npx hardhat run --network localhost scripts/deployment/deploy_c2n_token.js`
-3. `npx hardhat run --network localhost scripts/deployment/deploy_mock_token.js`
-4. `npx hardhat run --network localhost scripts/deployment/deploy_singletons.js`
+1. `npx hardhat run --network local scripts/deployment/deploy_boba_token.js`
+2. `npx hardhat run --network local scripts/deployment/deploy_c2n_token.js`
+3. `npx hardhat run --network local scripts/deployment/deploy_mock_token.js`
+4. `npx hardhat run --network local scripts/deployment/deploy_singletons.js`
 5. 设置saleConfig
-6. `npx hardhat run --network localhost scripts/deployment/deploy_sales.js`
+6. `npx hardhat run --network local scripts/deployment/deploy_sales.js`
