@@ -82,7 +82,7 @@ public class RegisterController {
     }
 
     /**
-     * 用户注册接口项目
+     * 用户注册接口项目，判断是否已经质押
      *
      * @param accountId 钱包地址
      * @return

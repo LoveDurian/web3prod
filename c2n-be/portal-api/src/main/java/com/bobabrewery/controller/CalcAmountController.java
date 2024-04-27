@@ -32,7 +32,7 @@ public class CalcAmountController {
     public static final BigDecimal e18 = new BigDecimal(1000000000000000000L);
 
     /**
-     * 计算用户的amount
+     * 计算用户的amount，【不用】
      *
      * @param accountId 用户钱包
      * @param productId 项目ID
@@ -41,25 +41,29 @@ public class CalcAmountController {
     @PostMapping("/calc")
     public Result calcAmount(@RequestParam("accountId") String accountId,
                              @RequestParam("productId") Integer productId) {
-        UserRegisterProduct product = userRegisterProductService.queryUserAllocations(accountId, productId);
-        if (product != null) {
-            JSONObject jsonObject = new JSONObject();
-            if (StringUtils.isBlank(product.getWinAmount())) {
-                product.setWinAmount("0");
-            }
-            if (new BigDecimal(product.getWinAmount()).compareTo(new BigDecimal(10)) < 0) {
-                product.setWinAmount("10");
-            }
-            BigDecimal d10 = new BigDecimal(10).multiply(e18);
-            if (new BigDecimal(product.getWinAmount()).compareTo(d10) < 0) {
-                product.setWinAmount(d10.toPlainString());
-            }
-            jsonObject.put("amount", product.getWinAmount());
-            return Result.ok(jsonObject);
-        } else {
-            throw new CommonException(ReCode.DATA_NOT_FOUND);
-        }
 
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("amount", "10");
+        return Result.ok(jsonObject);
+//
+//        UserRegisterProduct product = userRegisterProductService.queryUserAllocations(accountId, productId);
+//        if (product != null) {
+//            JSONObject jsonObject = new JSONObject();
+//            if (StringUtils.isBlank(product.getWinAmount())) {
+//                product.setWinAmount("0");
+//            }
+//            if (new BigDecimal(product.getWinAmount()).compareTo(new BigDecimal(10)) < 0) {
+//                product.setWinAmount("10");
+//            }
+//            BigDecimal d10 = new BigDecimal(10).multiply(e18);
+//            if (new BigDecimal(product.getWinAmount()).compareTo(d10) < 0) {
+//                product.setWinAmount(d10.toPlainString());
+//            }
+//            jsonObject.put("amount", "10");
+//            return Result.ok(jsonObject);
+//        } else {
+//            throw new CommonException(ReCode.DATA_NOT_FOUND);
+//        }
 
     }
 

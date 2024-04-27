@@ -44,17 +44,17 @@ public class EncodeController {
      *
      * @param userAddress     用户钱包地址
      * @param contractAddress 合约地址
-     * @return
+     * @return 返回签名信息
      */
     @PostMapping("/sign_registration")
     public Result<String> signRegistration(String userAddress, String contractAddress) {
         if (StringUtils.isBlank(userAddress) || StringUtils.isBlank(contractAddress)) {
             throw new CommonException(ReCode.INVALID_PARAMETERS);
         }
-        UserInfo byAccountId = userInfoDao.findByAccountId(userAddress);
-        if (byAccountId == null) {
-            throw new CommonException(ReCode.USER_DID_NOT_REGISTER);
-        }
+//        UserInfo byAccountId = userInfoDao.findByAccountId(userAddress);
+//        if (byAccountId == null) {
+//            throw new CommonException(ReCode.USER_DID_NOT_REGISTER);
+//        }
         String hex = Numeric.prependHexPrefix((Numeric.cleanHexPrefix(userAddress).concat(Numeric.cleanHexPrefix(contractAddress))).toLowerCase());
         return Result.ok(encodeServiceImpl.sign(hex));
     }
@@ -65,17 +65,18 @@ public class EncodeController {
      * @param userAddress     用户钱包
      * @param amount          数量
      * @param contractAddress 合约地址
-     * @return
+     * @return 返回签名信息
      */
     @PostMapping("/sign_participation")
     public Result<String> signParticipation(String userAddress, String amount, String contractAddress) {
         if (StringUtils.isBlank(userAddress) || StringUtils.isBlank(contractAddress) || StringUtils.isBlank(amount)) {
             throw new CommonException(ReCode.INVALID_PARAMETERS);
         }
-        UserInfo byAccountId = userInfoDao.findByAccountId(userAddress);
-        if (byAccountId == null) {
-            throw new CommonException(ReCode.USER_DID_NOT_REGISTER);
-        }
+
+//        UserInfo byAccountId = userInfoDao.findByAccountId(userAddress);
+//        if (byAccountId == null) {
+//            throw new CommonException(ReCode.USER_DID_NOT_REGISTER);
+//        }
 
         String userAddressHexString = Numeric.cleanHexPrefix(userAddress);
         String amountHexString = Numeric.toHexStringNoPrefixZeroPadded(new BigInteger(amount), 64);

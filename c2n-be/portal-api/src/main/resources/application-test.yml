@@ -75,6 +75,7 @@ logging:
         rollingpolicy:
             file-name-pattern: /cnb/log/${spring.application.name}.%d{yyyy-MM-dd}.%i.gz
 
+# 测试密钥
 owner:
     private:
         key: 702b0c8d127e662aff3fbdba0e797b6598f50cc8712230be879196343bba724f

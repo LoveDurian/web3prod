@@ -17,6 +17,7 @@ spring:
                 max-idle: 8
                 min-idle: 0
                 max-wait: -1ms
+        password: 123456
     mail:
         from: brewery.boba@gmail.com
         host: email-smtp.ap-southeast-1.amazonaws.com
@@ -59,7 +60,7 @@ telegram:
     token: 5001195422:AAFVPBYPJ5RB93TGJgeD51VRfDBtp9sAjwE
 
 encode:
-    server: http://127.0.0.1:30001
+    server: http://127.0.0.1:30002
 
 staking:
     boba: 0x2Dcf9fff0F0422fFE4134048A01e739972798dc6

@@ -91,7 +91,7 @@ public class PrivateController {
     }
 
     /**
-     * 根据用户参数获取秘钥
+     * 根据用户参数获取秘钥，需要配置私钥
      *
      * @param hex
      * @return
