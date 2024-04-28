@@ -6,8 +6,8 @@ spring:
     application:
         name: portal-api
     redis: # redis 配置
-        host: 127.0.0.1
-        port: 6379
+        host: ${REDIS_HOST:127.0.0.1}
+        port: ${REDIS_PORT:6379}
         database: 0
         timeout: 1000ms
         lettuce:
@@ -17,7 +17,7 @@ spring:
                 max-idle: 8
                 min-idle: 0
                 max-wait: -1ms
-        password: 123456
+        password: ${REDIS_PASSWORD:123456}
     mail:
         from: brewery.boba@gmail.com
         host: email-smtp.ap-southeast-1.amazonaws.com
@@ -27,9 +27,9 @@ spring:
         password: BAa2tfZzroIkWnDMPJu20gQmWn+9ZoHkzIr/78a6OkNN
     datasource: #druid数据源配置
         druid:
-            url: jdbc:mysql://127.0.0.1:3306/brewery?useUnicode=true&characterEncoding=utf8&useSSL=false
-            username: root
-            password: 123456
+            url: jdbc:mysql://${DB_HOST:127.0.0.1:3306}/${DB_NAME:brewery}?useUnicode=true&characterEncoding=utf8&useSSL=false
+            username: ${DB_USERNAME:root}
+            password: ${DB_PWD:123456}
             driver-class-name: com.mysql.cj.jdbc.Driver
             max-wait: 10000 #获取连接时最大等待时间，单位毫秒
             initial-size: 10 #初始化时建立物理连接的个数
@@ -54,7 +54,7 @@ mybatis:
 
 owner:
     private:
-        key: bcb80398e2ef7c966ba54304e0c64170d183c2c222bb2789d7b17510915ce817
+        key: ${OWNER_PRIVATE_KEY:bcb80398e2ef7c966ba54304e0c64170d183c2c222bb2789d7b17510915ce817}
 
 telegram:
     token: 5001195422:AAFVPBYPJ5RB93TGJgeD51VRfDBtp9sAjwE
