@@ -26,6 +26,7 @@ public class EncodeServiceImpl implements EncodeService {
 
     @Override
     public String sign(String hexString) {
+        log.info("hexString={}", hexString);
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/encode/sign")
                         .queryParam("hex", hexString).build())

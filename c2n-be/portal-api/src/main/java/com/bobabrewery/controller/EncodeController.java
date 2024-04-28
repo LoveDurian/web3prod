@@ -3,7 +3,6 @@ package com.bobabrewery.controller;
 import com.bobabrewery.common.Result;
 import com.bobabrewery.common.exceptin.CommonException;
 import com.bobabrewery.enums.ReCode;
-import com.bobabrewery.repo.common.domain.model.UserInfo;
 import com.bobabrewery.repo.common.mapper.UserInfoDao;
 import com.bobabrewery.repo.common.mapper.VoucherMapper;
 import com.bobabrewery.service.EncodeService;
@@ -30,7 +29,7 @@ public class EncodeController {
     private UserInfoDao userInfoDao;
 
     @Resource
-    private EncodeService encodeServiceImpl;
+    private EncodeService encodeService;
 
     @Resource
     private CredentialsUtils credentialsUtils;
@@ -48,6 +47,7 @@ public class EncodeController {
      */
     @PostMapping("/sign_registration")
     public Result<String> signRegistration(String userAddress, String contractAddress) {
+        log.info("userAddress={},contractAddress={}", userAddress, contractAddress);
         if (StringUtils.isBlank(userAddress) || StringUtils.isBlank(contractAddress)) {
             throw new CommonException(ReCode.INVALID_PARAMETERS);
         }
@@ -55,8 +55,17 @@ public class EncodeController {
 //        if (byAccountId == null) {
 //            throw new CommonException(ReCode.USER_DID_NOT_REGISTER);
 //        }
-        String hex = Numeric.prependHexPrefix((Numeric.cleanHexPrefix(userAddress).concat(Numeric.cleanHexPrefix(contractAddress))).toLowerCase());
-        return Result.ok(encodeServiceImpl.sign(hex));
+        String contractAddr = Numeric.cleanHexPrefix(contractAddress);
+        String userAddr = Numeric.cleanHexPrefix(userAddress);
+        String concat = userAddr.concat(contractAddr).toLowerCase();
+        String hex = Numeric.prependHexPrefix(concat);
+        String sign = null;
+        try {
+            sign = encodeService.sign(hex);
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
+        return Result.ok(sign);
     }
 
     /**
@@ -69,6 +78,7 @@ public class EncodeController {
      */
     @PostMapping("/sign_participation")
     public Result<String> signParticipation(String userAddress, String amount, String contractAddress) {
+        log.info("userAddress={},contractAddress={},amount={}", userAddress, contractAddress, amount);
         if (StringUtils.isBlank(userAddress) || StringUtils.isBlank(contractAddress) || StringUtils.isBlank(amount)) {
             throw new CommonException(ReCode.INVALID_PARAMETERS);
         }
@@ -82,7 +92,8 @@ public class EncodeController {
         String amountHexString = Numeric.toHexStringNoPrefixZeroPadded(new BigInteger(amount), 64);
         String contractAddressHesString = Numeric.cleanHexPrefix(contractAddress);
         String hexString = Numeric.prependHexPrefix((userAddressHexString.concat(amountHexString).concat(contractAddressHesString)).toLowerCase());
-        return Result.ok(encodeServiceImpl.sign(hexString));
+        log.info("hexString={},userAddressHexString={}", hexString, userAddressHexString);
+        return Result.ok(encodeService.sign(hexString));
     }
 
 
