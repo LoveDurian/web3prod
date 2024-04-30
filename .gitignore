@@ -1,1 +1,3 @@
 /.idea/
+/c2n-be/deployment/mysql/data/
+/c2n-be/deployment/docker-env/portal-api.env
