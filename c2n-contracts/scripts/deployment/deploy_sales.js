@@ -18,15 +18,16 @@ async function main() {
 
     const salesFactory = await hre.ethers.getContractAt('SalesFactory', contracts['SalesFactory']);
 
-    const tx = await salesFactory.deploySale();
+    let tx = await salesFactory.deploySale();
+    await tx.wait()
     console.log('Sale is deployed successfully.');
 
-    let ok = await yesno({
-        question: 'Are you sure you want to continue?'
-    });
-    if (!ok) {
-        process.exit(0)
-    }
+    // let ok = await yesno({
+    //     question: 'Are you sure you want to continue?'
+    // });
+    // if (!ok) {
+    //     process.exit(0)
+    // }
 
     const lastDeployedSale = await salesFactory.getLastDeployedSale();
     console.log('Deployed Sale address is: ', lastDeployedSale);
@@ -59,7 +60,7 @@ async function main() {
     // if (!ok) {
     //     process.exit(0)
     // }
-    await sale.setSaleParams(
+    tx =await sale.setSaleParams(
         c['tokenAddress'],
         saleOwner,
         tokenPriceInEth.toString(),
@@ -69,34 +70,37 @@ async function main() {
         c['portionVestingPrecision'],
         maxParticipation.toString()
     );
+    await tx.wait()
 
     console.log('Sale Params set successfully.');
 
     console.log('Setting registration time.');
-    //
+
     // ok = await yesno({
     //     question: 'Are you sure you want to continue?'
     // });
     // if (!ok) {
     //     process.exit(0)
     // }
-
-    await sale.setRegistrationTime(
+    //
+    tx = await sale.setRegistrationTime(
         registrationStart,
         registrationEnd
     );
+    await tx.wait()
 
     console.log('Registration time set.');
 
     console.log('Setting saleStart.');
-    //
+
     // ok = await yesno({
     //     question: 'Are you sure you want to continue?'
     // });
     // if (!ok) {
     //     process.exit(0)
     // }
-    await sale.setSaleStart(saleStartTime);
+    tx = await sale.setSaleStart(saleStartTime);
+    await tx.wait()
 
     const unlockingTimes = c['unlockingTimes'];
     const percents = c['portionPercents'];
@@ -114,7 +118,8 @@ async function main() {
     // if (!ok) {
     //     process.exit(0)
     // }
-    await sale.setVestingParams(unlockingTimes, percents, c['maxVestingTimeShift']);
+    tx = await sale.setVestingParams(unlockingTimes, percents, c['maxVestingTimeShift']);
+    await tx.wait()
 
     console.log('Vesting parameters set successfully.');
 

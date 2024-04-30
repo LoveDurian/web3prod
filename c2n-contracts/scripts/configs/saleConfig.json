@@ -111,19 +111,19 @@
   },
   "sepolia": {
     "tokenAddress": "0x8332c63860eBAf9eCb1e61fb1829C76D2B2A1cB7",
-    "totalTokens": "10000000",
+    "totalTokens": "10000",
     "tokenPriceUSD": "0.04",
     "tokenPriceInEth": "0.0000001",
     "saleOwner": "0x0f590970a45d0b4c2dcfcaFF453400eE9B91B317",
-    "registrationStartAt": 1713508555,
-    "registrationLength": 600,
+    "registrationStartAt": 1714365862,
+    "registrationLength": 9000000,
     "delayBetweenRegistrationAndSale": 600,
     "saleRoundLength": 86400,
-    "TGE": 1713508855,
+    "TGE": 1734365862,
     "portionVestingPrecision": 1000,
     "maxVestingTimeShift": 2592000,
     "unlockingTimes": [
-      1713508855
+      1734365862
     ],
     "portionPercents": [
       1000
