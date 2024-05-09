@@ -82,8 +82,8 @@
     "admins": [
       "0x0f590970a45d0b4c2dcfcaFF453400eE9B91B317"
     ],
-    "delayBeforeStart": 60,
+    "delayBeforeStart": 600,
     "allocationStakingRPS": "0.1",
-    "initialRewardsAllocationStaking": "1000000"
+    "initialRewardsAllocationStaking": "100000000"
   }
 }

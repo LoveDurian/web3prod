@@ -13,7 +13,7 @@ module.exports = {
             accounts: [process.env.DEPLOYER_PRIVATE_KEY]
         },
         sepolia: {
-            url: 'https://sepolia.drpc.org',
+            url: 'https://sepolia.infura.io/v3/4c7b9b83a323478185558e5756d7ccc5',
             accounts: [process.env.PRIVATE_KEY]
         },
     },

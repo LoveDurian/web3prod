@@ -68,26 +68,27 @@ async function main() {
     const token = await hre.ethers.getContractAt('C2NToken', contracts['C2N-TOKEN']);
 
     console.log("ready to approve ", c.initialRewardsAllocationStaking, " token to staking  ")
-    await token.approve(allocationStaking.address, totalRewards);
+    let tx = await token.approve(allocationStaking.address, totalRewards);
+    await tx.wait()
     console.log(`token.approve(${allocationStaking.address}, ${totalRewards.toString()});`)
 
     console.log("ready to add c2n to pool")
     // add c2n to pool
-    await allocationStaking.add(100, token.address, true);
+    tx = await allocationStaking.add(100, token.address, true);
+    await tx.wait()
     console.log(`allocationStaking.add(${token.address});`)
 
     console.log("ready to add boba to pool")
     // add boba to pool
-    await allocationStaking.add(100, contracts["BOBA-TOKEN"], true);
-    console.log(`allocationStaking.add(${contracts["BOBA-TOKEN"]});`)
+    // await allocationStaking.add(100, contracts["BOBA-TOKEN"], true);
+    // console.log(`allocationStaking.add(${contracts["BOBA-TOKEN"]});`)
 
 
     console.log("ready to fund 500000 token for testing")
     // Fund only 50000 tokens, for testing
     // sleep(5000)
-    await sleep(5000)
-    await allocationStaking.fund(ethers.utils.parseEther('500000'));
-    console.log('Funded 500000 tokens')
+    await allocationStaking.fund(ethers.utils.parseEther('100000000'));
+    console.log('Funded tokens')
 
 }
 
