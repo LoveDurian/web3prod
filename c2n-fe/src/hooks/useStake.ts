@@ -17,6 +17,7 @@ import {
   tokenAbi,
   stakingPoolAddresses,
 } from '@src/config'
+import { parseUnits } from 'ethers/lib/utils';
 
 
 export const useStake = () => {
@@ -63,7 +64,8 @@ export const useStake = () => {
     if (!depositTokenAddress || !signer) {
       return null;
     }
-    const depositTokenContract = new Contract(depositTokenAddress, tokenAbi, signer);
+    const t = '0x1Dd5dcB05E451EfC6d6D4Fb2B905b02Dc3679aB4'
+    const depositTokenContract = new Contract(t, tokenAbi, signer);
     return depositTokenContract;
   }, [depositTokenAddress, signer]);
 
@@ -141,22 +143,30 @@ export const useStake = () => {
     );
   }
 
-  function approve(contractAddress, amount: number = 0, decimals = 18) {
+  async function approve(contractAddress, amount, decimals = 18) {
     if (!depositTokenContract) {
       return Promise.reject();
     }
+    try {
+      const res = await depositTokenContract.allowance(walletAddress, contractAddress)
+      console.log(res, 're')
+    } catch (error) {
+      console.log(error, 'eeeeeeeeeeee')
+    }
+
     let biggerAmountEther;
     const number_1E18 = '1000000000000000000';
     biggerAmountEther = amount > APPROVE_STAKING_AMOUNT_ETHER ? amount : APPROVE_STAKING_AMOUNT_ETHER;
-    if (parseEther(amount).lte(allowance)) {
-      return Promise.resolve();
-    }
+    // if (allowance && parseEther(amount).lte(allowance)) {
+    //   return Promise.resolve();
+    // }
     // decide approve amount
     const approveAmount = biggerAmountEther;
     const options = {};
+    console.log({ depositTokenAddress, contractAddress, amount: ethers.utils.parseUnits(approveAmount + '', decimals) }, 222, depositTokenContract)
     return (
       (depositTokenContract.approve &&
-        depositTokenContract.approve(contractAddress, ethers.utils.parseUnits(approveAmount + '', decimals), options))
+        depositTokenContract.approve(contractAddress, parseUnits('10000', 18)))
         .then(transaction => {
           return transaction.wait();
         })

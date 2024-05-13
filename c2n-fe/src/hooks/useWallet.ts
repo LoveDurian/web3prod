@@ -176,7 +176,7 @@ export const useWallet = () => {
     if (!signer || !saleAddress) {
       return;
     }
-    const saleContract = new Contract(saleAddress, abiJSON['hardhat']['BrewerySale'], signer);
+    const saleContract = new Contract(saleAddress, abiJSON['hardhat']['C2NSale'], signer);
     dispatch(contractActions.setContracts({
       saleContract,
     }));
@@ -232,6 +232,7 @@ export const useWallet = () => {
   }
 
   async function addToken(tokenAddress, symbolName) {
+    console.log({ tokenAddress, symbolName }, 'add-token')
     await window.ethereum.request({
       method: "wallet_watchAsset",
       params: {

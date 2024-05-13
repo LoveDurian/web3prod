@@ -16,12 +16,12 @@ import { EARNED_TOKEN_ADDRESS } from '../config';
  * @param {number} fractionDigits 
  * @returns {string|any}
  */
-export function formatEther(bigNumber, fractionDigits = 2): number | any {
+export function formatEther(bigNumber, fractionDigits=2): number|any {
   if (typeof bigNumber === 'number' || typeof bigNumber === 'string') {
-    try {
-      bigNumber = BigNumber.from(('' + bigNumber).replace(/\.\d+/g, ''));
+    try{
+      bigNumber = BigNumber.from((''+bigNumber).replace(/\.\d+/g, ''));
     }
-    catch (e) {
+    catch(e) {
       console.error(e);
       return bigNumber;
     }
@@ -43,12 +43,12 @@ export function formatEther(bigNumber, fractionDigits = 2): number | any {
  * @param {number} fractionDigits 
  * @returns {string|any}
  */
-export function formatUnits(bigNumber, fractionDigits = 2, decimals = 18): number | any {
+ export function formatUnits(bigNumber, fractionDigits=2, decimals=18): number|any {
   if (typeof bigNumber === 'number' || typeof bigNumber === 'string') {
-    try {
-      bigNumber = BigNumber.from(('' + bigNumber).replace(/\.\d+/g, ''));
+    try{
+      bigNumber = BigNumber.from((''+bigNumber).replace(/\.\d+/g, ''));
     }
-    catch (e) {
+    catch(e) {
       console.error(e);
       return bigNumber;
     }
@@ -71,8 +71,8 @@ export function formatUnits(bigNumber, fractionDigits = 2, decimals = 18): numbe
  */
 export function parseEther(value) {
   try {
-    return etherUtils.parseUnits(value + '', "ether");
-  } catch (e) {
+    return etherUtils.parseUnits(value+'', "ether");
+  } catch(e) {
     console.error(e);
     return value;
   }
@@ -84,12 +84,12 @@ export function parseEther(value) {
  * @returns 
  */
 export function parseWei(value) {
-  if (value instanceof BigNumber) {
+  if(value instanceof BigNumber) {
     value = value.toString();
   }
   try {
-    return etherUtils.parseUnits(value + '', "wei");
-  } catch (e) {
+    return etherUtils.parseUnits(value+'', "wei");
+  } catch(e) {
     console.error(e);
     return value;
   }
@@ -100,29 +100,29 @@ export async function getAccounts() {
   return accounts;
 }
 
-export function formatDate(timestamp: number | string, formatter) {
+export function formatDate(timestamp:number|string, formatter){
   const d = new Date(new Number(timestamp) as number);
-  if (!d || isNaN(d.getTime())) {
+  if(!d || isNaN(d.getTime())) {
     return '';
   }
 
-  function fillZero(num) {
-    return (num + '').replace(/^(\d)$/, '0$1');
+  function fillZero(num){
+    return (num+'').replace(/^(\d)$/, '0$1');
   }
 
   let ret = formatter || 'YYYY-MM-DD';
 
   ret = ret.replace(/YYYY/gi, d.getFullYear())
-    .replace(/MM/g, fillZero(d.getMonth() + 1))
-    .replace(/Month/g,
-      [
-        'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',
-      ][d.getMonth()]
-    )
-    .replace(/DD/gi, fillZero(d.getDate()))
-    .replace(/HH/gi, fillZero(d.getHours()))
-    .replace(/mm/g, fillZero(d.getMinutes()))
-    .replace(/ss/g, fillZero(d.getSeconds()));
+  .replace(/MM/g, fillZero(d.getMonth()+1))
+  .replace(/Month/g, 
+    [
+      'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',
+    ][d.getMonth()]
+  )
+  .replace(/DD/gi, fillZero(d.getDate()))
+  .replace(/HH/gi, fillZero(d.getHours()))
+  .replace(/mm/g, fillZero(d.getMinutes()))
+  .replace(/ss/g, fillZero(d.getSeconds()));
 
   return ret;
 }
@@ -130,27 +130,25 @@ export function formatDate(timestamp: number | string, formatter) {
 // Convert a hex string to a byte array
 export function hexToBytes(hex) {
   for (var bytes = [], c = 0; c < hex.length; c += 2)
-    bytes.push(parseInt(hex.substr(c, 2), 16));
+      bytes.push(parseInt(hex.substr(c, 2), 16));
   return bytes;
 }
 
 // Convert a byte array to a hex string
 export function bytesToHex(bytes) {
   for (var hex = [], i = 0; i < bytes.length; i++) {
-    var current = bytes[i] < 0 ? bytes[i] + 256 : bytes[i];
-    hex.push((current >>> 4).toString(16));
-    hex.push((current & 0xF).toString(16));
+      var current = bytes[i] < 0 ? bytes[i] + 256 : bytes[i];
+      hex.push((current >>> 4).toString(16));
+      hex.push((current & 0xF).toString(16));
   }
   return hex.join("");
 }
 
 export function formatNumber(num) {
-  num = num >= 1000000 ? (~~(num / 1000000).toFixed(2) + 'M') : num;
+  num = num >= 1000000 ? (~~(num/1000000).toFixed(2) + 'M') : num;
   return /\d/.test(num) && ("" + num).replace(/\B(?=(?:\d{3})+(?!\d))/g, ",") || ''
 }
 
 export function seperateNumWithComma(num) {
   return /\d/.test(num) && ("" + num).replace(/\B(?=(?:\d{3})+(?!\d))/g, ",") || ''
 }
-
-export const HelperLink = 'https://fi1tqn67p7p.feishu.cn/wiki/GvewwihZFiYYDJk0ynFc4Rs9nNb'

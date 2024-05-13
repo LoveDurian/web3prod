@@ -28,18 +28,18 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { useErrorHandler } from "@src/hooks/useErrorHandler";
 import AppPopover from "@src/components/elements/AppPopover";
 
-function TierCard(props:any) {
+function TierCard(props: any) {
   const data = props && props['data'] || [];
   return (<div className={[styles['tier-card'], 'tier-card'].join(' ')}>
     <div className="wrapper">
       <Row justify="center" className={styles['tier-title']}>
-        {data[0]||''}
+        {data[0] || ''}
       </Row>
       <Row justify="center" className={styles['tier-label']}>
         Staking Requirement
       </Row>
       <Row justify="center" className={styles['tier-value-large']}>
-        {data[1]||''}
+        {data[1] || ''}
       </Row>
       <Row justify="center" className={styles['tier-label']}>
         Whitelist Requirement Twitter
@@ -57,7 +57,7 @@ function TierCard(props:any) {
         Allocation Weight
       </Row>
       <Row justify="center" className={styles['tier-value-medium']}>
-        {data[2]||''}
+        {data[2] || ''}
       </Row>
     </div>
   </div>)
@@ -108,7 +108,7 @@ export default function StakingForm(props: StakingFormProps) {
   const {
     getErrorMessage,
   } = useErrorHandler();
-  
+
   const {
     isDesktopOrLaptop,
     isTabletOrMobile,
@@ -138,15 +138,15 @@ export default function StakingForm(props: StakingFormProps) {
     setPageLoading,
   } = usePageLoading()
 
-  useEffect(()=>{
+  useEffect(() => {
     getBobaToUsd();
     getBreToUsd();
 
     // setPageLoading(true);
   }, []);
 
-  useEffect(()=>{
-    if(!viewStakingContract) {
+  useEffect(() => {
+    if (!viewStakingContract) {
       return;
     }
     clearInterval(poolInfoTimer);
@@ -154,7 +154,7 @@ export default function StakingForm(props: StakingFormProps) {
     getRewardPerSecond();
     updateBalanceInfo();
 
-    poolInfoTimer = setInterval(() =>{
+    poolInfoTimer = setInterval(() => {
       getPoolInfo(poolId);
       getRewardPerSecond();
       updateBalanceInfo();
@@ -165,9 +165,9 @@ export default function StakingForm(props: StakingFormProps) {
     }
   }, [viewStakingContract, walletAddress, chain])
 
-  const totalDeposits = useMemo(()=>{
-    if(poolInfo) {
-      return  poolInfo.totalDeposits||1;
+  const totalDeposits = useMemo(() => {
+    if (poolInfo) {
+      return poolInfo.totalDeposits || 1;
     } else {
       return 1;
     }
@@ -175,8 +175,8 @@ export default function StakingForm(props: StakingFormProps) {
 
   const secondsPerYear = 60 * 60 * 24 * 365;
 
-  useEffect(()=>{
-    if(poolInfo){
+  useEffect(() => {
+    if (poolInfo) {
       // setPageLoading(false);
     }
   }, [poolInfo]);
@@ -186,19 +186,19 @@ export default function StakingForm(props: StakingFormProps) {
     setAllowanceAddress(globalPoolStakingAddress);
   }, [globalPoolStakingAddress]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setDepositTokenAddress(globalPoolDepositTokenAddress);
   }, [globalPoolDepositTokenAddress]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setEarnedTokenAddress(globalPoolEarnedTokenAddress);
   }, [globalPoolEarnedTokenAddress]);
-  
+
   async function userInfo(pid, address) {
     if (!stakingContract) {
       return Promise.reject();
     }
-    const options = {  };
+    const options = {};
     const ret =
       stakingContract.userInfo &&
       (await stakingContract.userInfo(0, address, options));
@@ -208,13 +208,13 @@ export default function StakingForm(props: StakingFormProps) {
     if (!viewStakingContract) {
       return Promise.reject();
     }
-    const options = {  };
+    const options = {};
     try {
       const ret =
-      viewStakingContract.poolInfo &&
+        viewStakingContract.poolInfo &&
         (await viewStakingContract.poolInfo(poolId));
       setPoolInfo(ret);
-    } catch(e) {
+    } catch (e) {
       console.error(e);
     }
   }
@@ -223,7 +223,7 @@ export default function StakingForm(props: StakingFormProps) {
     if (!stakingContract) {
       return Promise.reject();
     }
-    const options = {  };
+    const options = {};
     const ret =
       viewStakingContract.rewardPerSecond &&
       (await viewStakingContract.rewardPerSecond());
@@ -235,132 +235,132 @@ export default function StakingForm(props: StakingFormProps) {
    * on stake button click
    */
   async function onStakeButtonClick() {
-    if(depositNum == 0) {
+    if (depositNum == 0) {
       setErrorMessage(`Cannot stake 0 ${depositSymbol}!`);
       return;
     }
     await updateBalanceInfo();
-    if(depositNum > formatEther(balance)) {
+    if (depositNum > formatEther(balance)) {
       setErrorMessage(`Not enough ${depositSymbol} to stake!`);
       return;
     }
     return approve(globalPoolStakingAddress, depositNum)
-    .then((txHash)=>{
-      return deposit(poolId, depositNum)
-        .then((transaction) => {
-          return transaction.wait();
-        })
-        .then(()=>{
-          const saveStake = async() => {
-            const f = new FormData();
-            f.append('walletAddress', walletAddress);
-            f.append('amount', depositNum+'');
-            f.append('type', poolId+'');
-            f.append('chainId', chain.chainId)+'';
-            f.append('contractAddress', globalPoolStakingAddress);
-            return axios.post('/boba/save/staking', f)
-          }
-          return new Promise((resolve, reject)=>{
-            function loop() {
-              setTimeout(()=>{
-                saveStake()
-                .then(resolve)
-                .catch(()=>{
-                  loop();
-                })
-              }, 3000)
-            }
-            loop();
+      .then((txHash) => {
+        return deposit(poolId, depositNum)
+          .then((transaction) => {
+            return transaction.wait();
           })
-        })
-        .then(()=>{
-          setSuccessMessage('Congratulations, you have successfully deposited '+depositNum+' '+depositSymbol);
-          setDepositNum(0);
-          updateBalanceInfo();
-          return Promise.resolve();
-        })
-        .catch(e=>{
-          throw e;
-        })
-    })
-    .catch((e) => {
-      console.error(e);
-      let msg = getErrorMessage(e);
-      // FIXME: error of object cannot catch, hence handle string here.
-      if(typeof e === 'string' && e.indexOf('ERC20: transfer amount exceeds allowance')>-1) {
-        msg = 'Approve amount should be greater than staking amount!';
-      }
-      setErrorMessage('Stake failed. '+(msg||''));
-      updateBalanceInfo();
-    })
+          .then(() => {
+            const saveStake = async () => {
+              const f = new FormData();
+              f.append('walletAddress', walletAddress);
+              f.append('amount', depositNum + '');
+              f.append('type', poolId + '');
+              f.append('chainId', chain.chainId) + '';
+              f.append('contractAddress', globalPoolStakingAddress);
+              return axios.post('/boba/save/staking', f)
+            }
+            return new Promise((resolve, reject) => {
+              function loop() {
+                setTimeout(() => {
+                  saveStake()
+                    .then(resolve)
+                    .catch(() => {
+                      loop();
+                    })
+                }, 3000)
+              }
+              loop();
+            })
+          })
+          .then(() => {
+            setSuccessMessage('Congratulations, you have successfully deposited ' + depositNum + ' ' + depositSymbol);
+            setDepositNum(0);
+            updateBalanceInfo();
+            return Promise.resolve();
+          })
+          .catch(e => {
+            throw e;
+          })
+      })
+      .catch((e) => {
+        console.error(e);
+        let msg = getErrorMessage(e);
+        // FIXME: error of object cannot catch, hence handle string here.
+        if (typeof e === 'string' && e.indexOf('ERC20: transfer amount exceeds allowance') > -1) {
+          msg = 'Approve amount should be greater than staking amount!';
+        }
+        setErrorMessage('Stake failed. ' + (msg || ''));
+        updateBalanceInfo();
+      })
   }
 
   function onWithdrawButtonClick() {
     // TODO: fix callback
     return withdraw(poolId, withdrawNum)
-    .then((transaction) => {
-      return transaction.wait();
-    })
-    .then(()=>{
-      const saveWithdraw = async() => {
-        const f = new FormData();
-        f.append('walletAddress', walletAddress);
-        f.append('amount', withdrawNum+'');
-        f.append('type', poolId+'');
-        f.append('chainId', chain.chainId + '');
-        f.append('contractAddress', globalPoolStakingAddress);
-        return axios.post('/boba/save/withdraw', f)
-      }
-      return new Promise((resolve, reject)=>{
-        function loop() {
-          setTimeout(()=>{
-            saveWithdraw()
-            .then(resolve)
-            .catch(()=>{
-              loop();
-            })
-          }, 3000)
+      .then((transaction) => {
+        return transaction.wait();
+      })
+      .then(() => {
+        const saveWithdraw = async () => {
+          const f = new FormData();
+          f.append('walletAddress', walletAddress);
+          f.append('amount', withdrawNum + '');
+          f.append('type', poolId + '');
+          f.append('chainId', chain.chainId + '');
+          f.append('contractAddress', globalPoolStakingAddress);
+          return axios.post('/boba/save/withdraw', f)
         }
-        loop();
+        return new Promise((resolve, reject) => {
+          function loop() {
+            setTimeout(() => {
+              saveWithdraw()
+                .then(resolve)
+                .catch(() => {
+                  loop();
+                })
+            }, 3000)
+          }
+          loop();
+        })
+          .catch(e => {
+            throw e;
+          })
       })
-      .catch(e=>{
-        throw e;
+      .then(() => {
+        setSuccessMessage('Withdraw success!');
+        setWithdrawNum(0);
+        updateBalanceInfo();
       })
-    })
-    .then(() => {
-      setSuccessMessage('Withdraw success!');
-      setWithdrawNum(0);
-      updateBalanceInfo();
-    })
-    .catch((e) => {
-      console.error(e);
-      let msg = getErrorMessage(e);
-      setErrorMessage('Withdraw failed. '+(msg||''));
-    })
+      .catch((e) => {
+        console.error(e);
+        let msg = getErrorMessage(e);
+        setErrorMessage('Withdraw failed. ' + (msg || ''));
+      })
   }
 
   function onHarvestButtonClick() {
     return withdraw(poolId, 0)
-    .then((transaction) => {
-      return transaction.wait();
-    })
-    .then(()=>{
-      setSuccessMessage('Harvest success!');
-      updateBalanceInfo();
-    })
-    .catch((e) => {
-      console.error(e);
-      let msg = getErrorMessage(e);
-      setErrorMessage('Harvest failed. '+(msg||''));
-    })
+      .then((transaction) => {
+        return transaction.wait();
+      })
+      .then(() => {
+        setSuccessMessage('Harvest success!');
+        updateBalanceInfo();
+      })
+      .catch((e) => {
+        console.error(e);
+        let msg = getErrorMessage(e);
+        setErrorMessage('Harvest failed. ' + (msg || ''));
+      })
   }
 
-  const totalDepositsInEther:number = formatEther(totalDeposits) as number;
-  const totalDepositsInUsd:number = totalDepositsInEther * stakedTokenToUsd;
-  const earnedBreInEther:number = formatEther(earnedBre);
-  const depositedAmountInEther:number = formatEther(depositedAmount) || 0;
+  const totalDepositsInEther: number = formatEther(totalDeposits) as number;
+  const totalDepositsInUsd: number = totalDepositsInEther * stakedTokenToUsd;
+  const earnedBreInEther: number = formatEther(earnedBre);
+  const depositedAmountInEther: number = formatEther(depositedAmount) || 0;
 
-  {/* total statistic */}
+  {/* total statistic */ }
   const statistic = (
     <section className={styles['total-stat']}>
       <div className={styles['box']}>
@@ -372,7 +372,7 @@ export default function StakingForm(props: StakingFormProps) {
         </div>
         <div className={styles['extra']}>
           {/* FIXME: should multiple boba to eth price */}
-          ~${(totalDepositsInUsd||0).toFixed(2)}
+          ~${(totalDepositsInUsd || 0).toFixed(2)}
         </div>
       </div>
       <div className={styles['box']}>
@@ -384,7 +384,7 @@ export default function StakingForm(props: StakingFormProps) {
         </div>
         <div className={styles['extra']}>
           {/* FIXME: should multiple bre to eth price */}
-          ~${formatEther(totalPending)*earnedTokenToUsd}
+          ~${formatEther(totalPending) * earnedTokenToUsd}
         </div>
       </div>
       <div className={styles['box']}>
@@ -392,217 +392,217 @@ export default function StakingForm(props: StakingFormProps) {
           Reward Unlock Rate
         </div>
         <div className={styles['value']}>
-          {formatEther(rewardPerSecond)} {earnedSymbol} <span style={{fontSize: '20px',color: '#000000',}}>/ Second</span>
+          {formatEther(rewardPerSecond)} {earnedSymbol} <span style={{ fontSize: '20px', color: '#000000', }}>/ Second</span>
         </div>
         <div className={styles['extra']}>
           {/* FIXME: should multiple bre to eth price */}
-          ~${(formatEther(rewardPerSecond)*earnedTokenToUsd).toFixed(2)}
+          ~${(formatEther(rewardPerSecond) * earnedTokenToUsd).toFixed(2)}
         </div>
       </div>
-      </section>)
+    </section>)
 
   return (
     <PageLoader>
       <div className={styles['staking-form']}>
 
-      {/* deposit form */}
-      <section className={styles['stake-token']}>
-        <Row justify="space-between" gutter={[16, 16]}>
-          <Col className="left" span={isDesktopOrLaptop ? 12 : 24}>
-            <h2 className={styles['title']}>
-              <i className="icon icon-stake-3"></i>
-              <span style={{marginLeft: '10px'}}>Stake {depositSymbol}</span>
-            </h2>
-            <Row justify="space-between" gutter={[16,16]}>
-              <Col span={isDesktopOrLaptop ? 12 : 24}>
-                <Row justify="space-between">
+        {/* deposit form */}
+        <section className={styles['stake-token']}>
+          <Row justify="space-between" gutter={[16, 16]}>
+            <Col className="left" span={isDesktopOrLaptop ? 12 : 24}>
+              <h2 className={styles['title']}>
+                <i className="icon icon-stake-3"></i>
+                <span style={{ marginLeft: '10px' }}>Stake {depositSymbol}</span>
+              </h2>
+              <Row justify="space-between" gutter={[16, 16]}>
+                <Col span={isDesktopOrLaptop ? 12 : 24}>
+                  <Row justify="space-between">
                     <div className="balance">
                       {
                         stakingContract ?
-                        <>Balance: {formatEther(balance, 4)?.toFixed(4)} {depositSymbol}</>
-                        : <>Balance: -</>
+                          <>Balance: {formatEther(balance, 4)?.toFixed(4)} {depositSymbol}</>
+                          : <>Balance: -</>
                       }
                     </div>
-                    <div className="max" onClick={()=>setDepositNum(formatEther(balance))}>MAX</div>
-                </Row>
-              </Col>
-            </Row>
-            <Row justify="space-between" gutter={[16,16]}>
-              <Col span={isDesktopOrLaptop ? 12 : 24}>
-                <div className="input">
-                  <InputNumber
-                    className={'number'}
-                    value={depositNum}
-                    max={formatEther(balance,2)}
-                    step="0.0001"
-                    onChange={value=>setDepositNum(value>0?value:'')}
-                    stringMode
-                    controls={false}
-                    bordered={false}
-                  />
-                  <div className="unit">{depositSymbol}</div>
-                </div>
-              </Col>
-              <Col span={isDesktopOrLaptop ? 12 : 24}>
-              {
-                props.available ? 
-                (<TransactionButton 
-                    className="button"
-                    onClick={onStakeButtonClick} 
-                    noConnectText={'Connect wallet to stake'}
-                    requiredChainId={288}
-                    switchNetworkText={'Switch network to stake'}
-                    style={{width: '100%'}}
-                    >
-                    Stake
-                  </TransactionButton>)
-                :(<AppPopover content={'Coming soon'} wrap={true}>
-                  <TransactionButton 
-                    className={styles['button']}
-                    disabled={true}
-                    onClick={()=>{}} 
-                    noConnectText={'Connect wallet to stake'}
-                    style={{width: '100%'}}
-                    >
-                    Stake
-                  </TransactionButton>
-                </AppPopover>)
-              }
-              </Col>
-            </Row>
-            <Row>
-              &nbsp;
-            </Row>
-            <h2 className={styles['title']}>
-              <i className="icon icon-stake-5"></i>
-              <span style={{marginLeft: '10px'}}>Withdraw {depositSymbol}</span>
-            </h2>
-            <Row gutter={[16,16]}>
-              <Col span={isDesktopOrLaptop ? 12 : 24}>
-                <Row justify="space-between">
+                    <div className="max" onClick={() => setDepositNum(formatEther(balance))}>MAX</div>
+                  </Row>
+                </Col>
+              </Row>
+              <Row justify="space-between" gutter={[16, 16]}>
+                <Col span={isDesktopOrLaptop ? 12 : 24}>
+                  <div className="input">
+                    <InputNumber
+                      className={'number'}
+                      value={depositNum}
+                      max={formatEther(balance, 2)}
+                      step="0.0001"
+                      onChange={value => setDepositNum(value > 0 ? value : '')}
+                      stringMode
+                      controls={false}
+                      bordered={false}
+                    />
+                    <div className="unit">{depositSymbol}</div>
+                  </div>
+                </Col>
+                <Col span={isDesktopOrLaptop ? 12 : 24}>
                   {
-                    stakingContract
-                    ? <>
-                      <div className="balance">Balance: {formatEther(depositedAmount, 4)?.toFixed(4)} {depositSymbol}</div>
-                    </>
-                    : <>
-                      <div className="balance">Balance: -</div>
-                    </>
+                    props.available ?
+                      (<TransactionButton
+                        className="button"
+                        onClick={onStakeButtonClick}
+                        noConnectText={'Connect wallet to stake222'}
+                        requiredChainId={11155111}
+                        switchNetworkText={'Switch network to stake'}
+                        style={{ width: '100%' }}
+                      >
+                        Stake111
+                      </TransactionButton>)
+                      : (<AppPopover content={'Coming soon'} wrap={true}>
+                        <TransactionButton
+                          className={styles['button']}
+                          disabled={true}
+                          onClick={() => { }}
+                          noConnectText={'Connect wallet to stake111'}
+                          style={{ width: '100%' }}
+                        >
+                          Stake
+                        </TransactionButton>
+                      </AppPopover>)
                   }
-                  <div className="max" onClick={()=>setWithdrawNum(formatEther(depositedAmount,4))}>MAX</div>
-                </Row>
-              </Col>
-            </Row>
-            <Row gutter={[16,16]}>
-              <Col span={isDesktopOrLaptop ? 12 : 24}>
-                <div className="input">
-                  <InputNumber
-                    className={'number'}
-                    value={withdrawNum}
-                    max={formatEther(depositedAmount, 4)}
-                    step="0.0001"
-                    onChange={value=>setWithdrawNum(value>0?value:'')}
-                    stringMode
-                    controls={false}
-                    bordered={false}
-                  />
-                  <div className="unit">{depositSymbol}</div>
-                </div>
-              </Col>
-              <Col span={isDesktopOrLaptop ? 12 : 24}>
+                </Col>
+              </Row>
+              <Row>
+                &nbsp;
+              </Row>
+              <h2 className={styles['title']}>
+                <i className="icon icon-stake-5"></i>
+                <span style={{ marginLeft: '10px' }}>Withdraw {depositSymbol}</span>
+              </h2>
+              <Row gutter={[16, 16]}>
+                <Col span={isDesktopOrLaptop ? 12 : 24}>
+                  <Row justify="space-between">
+                    {
+                      stakingContract
+                        ? <>
+                          <div className="balance">Balance: {formatEther(depositedAmount, 4)?.toFixed(4)} {depositSymbol}</div>
+                        </>
+                        : <>
+                          <div className="balance">Balance: -</div>
+                        </>
+                    }
+                    <div className="max" onClick={() => setWithdrawNum(formatEther(depositedAmount, 4))}>MAX</div>
+                  </Row>
+                </Col>
+              </Row>
+              <Row gutter={[16, 16]}>
+                <Col span={isDesktopOrLaptop ? 12 : 24}>
+                  <div className="input">
+                    <InputNumber
+                      className={'number'}
+                      value={withdrawNum}
+                      max={formatEther(depositedAmount, 4)}
+                      step="0.0001"
+                      onChange={value => setWithdrawNum(value > 0 ? value : '')}
+                      stringMode
+                      controls={false}
+                      bordered={false}
+                    />
+                    <div className="unit">{depositSymbol}</div>
+                  </div>
+                </Col>
+                <Col span={isDesktopOrLaptop ? 12 : 24}>
+                  {
+                    props.available ?
+                      (<TransactionButton
+                        className="button"
+                        onClick={onWithdrawButtonClick}
+                        noConnectText={'Connect wallet to withdraw'}
+                        requiredChainId={11155111}
+                        switchNetworkText={'Switch network to withdraw'}
+                        style={{ width: '100%' }}
+                      >
+                        Withdraw
+                      </TransactionButton>)
+                      : (<AppPopover content={'Coming soon'} wrap={true}>
+                        <TransactionButton
+                          className={styles['button']}
+                          disabled={true}
+                          onClick={() => { }}
+                          noConnectText={'Connect wallet to withdraw'}
+                          style={{ width: '100%' }}
+                        >
+                          Withdraw
+                        </TransactionButton>
+                      </AppPopover>)
+                  }
+                </Col>
+              </Row>
+            </Col>
+            <Col className="right" span={isDesktopOrLaptop ? 12 : 24}>
+              <Carousel className={styles['slider']} ref={tiers}
+                dots={false}
+                autoplay
+              >
                 {
-                  props.available ? 
-                  (<TransactionButton 
-                      className="button"
-                      onClick={onWithdrawButtonClick} 
-                      noConnectText={'Connect wallet to withdraw'}
-                      requiredChainId={288}
-                      switchNetworkText={'Switch network to withdraw'}
-                      style={{width: '100%'}}
-                      >
-                      Withdraw
-                    </TransactionButton>)
-                  :(<AppPopover content={'Coming soon'} wrap={true}>
-                    <TransactionButton 
-                      className={styles['button']}
-                      disabled={true}
-                      onClick={()=>{}} 
-                      noConnectText={'Connect wallet to withdraw'}
-                      style={{width: '100%'}}
-                      >
-                      Withdraw
-                    </TransactionButton>
-                  </AppPopover>)
+                  [
+                    ['Tier One', '1-5,000', '1'],
+                    ['Tier Two', '5,001-25,000', '2'],
+                    ['Tier Three', '25,001-50,000', '3'],
+                    ['Tier Four', '50,001-100,000', '4'],
+                    ['Tier Five', 'More than 100,000', '5'],
+                  ].map((val, index) => {
+                    return <TierCard data={val} key={index}></TierCard>
+                  })
                 }
-              </Col>
-            </Row>
-          </Col>
-          <Col className="right" span={isDesktopOrLaptop ? 12 : 24}>
-            <Carousel className={styles['slider']} ref={tiers}
-              dots={false} 
-              autoplay
-             >
-              {
-                [
-                  ['Tier One', '1-5,000', '1'],
-                  ['Tier Two', '5,001-25,000', '2'],
-                  ['Tier Three', '25,001-50,000', '3'],
-                  ['Tier Four', '50,001-100,000', '4'],
-                  ['Tier Five', 'More than 100,000', '5'],
-                ].map((val, index) => {
-                  return <TierCard data={val} key={index}></TierCard>
-                })
-              }
-            </Carousel>
-            <LeftOutlined
-             onClick={()=>{tiers.current && tiers.current.prev()}} 
-             className={styles['tier-left-arrow']} />
-            <RightOutlined
-             onClick={()=>{tiers.current && tiers.current.next()}} 
-             className={styles['tier-right-arrow']} />
-          </Col>
-        </Row>
-      </section>
+              </Carousel>
+              <LeftOutlined
+                onClick={() => { tiers.current && tiers.current.prev() }}
+                className={styles['tier-left-arrow']} />
+              <RightOutlined
+                onClick={() => { tiers.current && tiers.current.next() }}
+                className={styles['tier-right-arrow']} />
+            </Col>
+          </Row>
+        </section>
 
-      <section className={styles['staking-stats']}>
-        <h2 className={styles['title']}>
-          <i className="icon icon-stake-4"></i>
-          <span style={{marginLeft: '10px'}}>Staking Stats</span>
-        </h2>
-        <Row className={styles['wrap']} gutter={isDesktopOrLaptop ? [16, 16] : [0, 16]}>
-          <Col span={isDesktopOrLaptop ? 8 : 24}>
-            <Row className={styles['box']} align="middle" gutter={4}>
-              <Col span={24} className={styles['label']}>
-                <span>My Staked {depositSymbol}</span>
-              </Col>
-              <Col span={24} className={styles['value']}>
-                <Motion defaultStyle={{x: 0}} style={{x: spring(depositedAmountInEther)}}>
-                  {value => <>{seperateNumWithComma((value.x.toFixed(2)))} {depositSymbol}</>}
-                </Motion>
-                <div className={styles['extra']}>
-                  ~${seperateNumWithComma((depositedAmountInEther*stakedTokenToUsd).toFixed(2))}
-                </div>
-              </Col>
-            </Row>
-          </Col>
-          <Col span={isDesktopOrLaptop ? 8 : 24}>
-            <Row className={styles['box']} align="middle" gutter={4}>
+        <section className={styles['staking-stats']}>
+          <h2 className={styles['title']}>
+            <i className="icon icon-stake-4"></i>
+            <span style={{ marginLeft: '10px' }}>Staking Stats</span>
+          </h2>
+          <Row className={styles['wrap']} gutter={isDesktopOrLaptop ? [16, 16] : [0, 16]}>
+            <Col span={isDesktopOrLaptop ? 8 : 24}>
+              <Row className={styles['box']} align="middle" gutter={4}>
+                <Col span={24} className={styles['label']}>
+                  <span>My Staked {depositSymbol}</span>
+                </Col>
+                <Col span={24} className={styles['value']}>
+                  <Motion defaultStyle={{ x: 0 }} style={{ x: spring(depositedAmountInEther) }}>
+                    {value => <>{seperateNumWithComma((value.x.toFixed(2)))} {depositSymbol}</>}
+                  </Motion>
+                  <div className={styles['extra']}>
+                    ~${seperateNumWithComma((depositedAmountInEther * stakedTokenToUsd).toFixed(2))}
+                  </div>
+                </Col>
+              </Row>
+            </Col>
+            <Col span={isDesktopOrLaptop ? 8 : 24}>
+              <Row className={styles['box']} align="middle" gutter={4}>
                 <Col span={24} className={styles['label']}>
                   <span>Total Value Locked</span>
                 </Col>
                 <Col span={24} className={styles['value']}>
                   $
-                  <Motion defaultStyle={{x: totalDepositsInUsd}} style={{x: spring(totalDepositsInUsd)}}>
+                  <Motion defaultStyle={{ x: totalDepositsInUsd }} style={{ x: spring(totalDepositsInUsd) }}>
                     {value => <>{seperateNumWithComma(value.x.toFixed(0))}</>}
                   </Motion>
                 </Col>
                 <div className={styles['extra']}>
                   &nbsp;
                 </div>
-            </Row>
-          </Col>
-          <Col span={isDesktopOrLaptop ? 8 : 24}>
-            <Row className={styles['box']} align="middle" gutter={4}>
+              </Row>
+            </Col>
+            <Col span={isDesktopOrLaptop ? 8 : 24}>
+              <Row className={styles['box']} align="middle" gutter={4}>
                 <Col span={24} className={styles['label']}>
                   <span>{depositSymbol} Price</span>
                 </Col>
@@ -612,11 +612,11 @@ export default function StakingForm(props: StakingFormProps) {
                 <div className={styles['extra']}>
                   &nbsp;
                 </div>
-            </Row>
-          </Col>
-        </Row>
-      </section>
-      
+              </Row>
+            </Col>
+          </Row>
+        </section>
+
       </div>
     </PageLoader>
   );

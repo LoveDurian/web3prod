@@ -10,6 +10,8 @@ import { BigNumber } from '@ethersproject/bignumber';
 import styles from './ParticipateModal.module.scss'
 import AppPopover from '@src/components/elements/AppPopover';
 import TransactionButton from "@src/components/elements/TransactionButton";
+import FormItemLabel from 'antd/es/form/FormItemLabel';
+import { formatUnits } from 'ethers/lib/utils';
 
 const NUMBER_1E5 = 100000;
 
@@ -19,22 +21,22 @@ export default function ParticipateModal(props) {
   } = useWallet();
   const data = props.data || {};
   const [eth, setEth] = useState<any>();
-  const [bre, setBre] = useState<any>();
-  const [max, setMax] = useState<any>();
+  const [bre, setBre] = useState<any>(10);
+  const [max, setMax] = useState<any>(10);
 
   const tokenPriceInPT = formatEther(props.tokenPriceInPT);
 
-  const allocationTop = useMemo(()=>{
+  const allocationTop = useMemo(() => {
     return data.allocationTop;
   }, [data])
 
-  const decimals = useMemo(()=>{
+  const decimals = useMemo(() => {
     return data.paymentTokenDecimal;
   }, [data])
 
-  useEffect(()=>{
-    if(allocationTop) {
-      const bre = formatEther(allocationTop||0);
+  useEffect(() => {
+    if (allocationTop) {
+      const bre = 10;
       setBre(bre);
       setMax(bre);
       setEth(calEth(bre));
@@ -49,16 +51,17 @@ export default function ParticipateModal(props) {
 
   function calEth(breValue) {
     let eth;
-    try{
-      eth = formatEther(BigNumber.from((NUMBER_1E5 * breValue)).mul(Math.pow(10, 18-decimals)).mul(data.tokenPriceInPT||1).div(NUMBER_1E5), 8); 
+    try {
+      eth = Number(formatUnits(data.tokenPriceInPT || '1', 18)) * Number(breValue)
+      // eth = formatEther(BigNumber.from((NUMBER_1E5 * breValue)).mul(Math.pow(10, 18 - decimals)).mul(data.tokenPriceInPT || 1).div(NUMBER_1E5), 8);
     } catch (e) {
       eth = 0;
     }
-    return eth.toFixed(4);
+    return eth?.toFixed(6) || '';
   }
 
   function handleOk() {
-    props.handleOk({value: bre});
+    props.handleOk({ value: bre });
   }
 
   return (
@@ -77,9 +80,9 @@ export default function ParticipateModal(props) {
       </h2>
       <Row>
         <p className={styles['desc']}>
-        Buy your {data.tokenName} ({data.symbol}) tokens with no extra fee, you can purchase with a maximum of {'\u00a0'}
-        <AppPopover content={max}><span className={styles['maximum']}>{max && max.toFixed(4)}</span> {data.symbol || ''}</AppPopover>. {'\u00a0'}
-        Make sure to confirm the transaction in your wallet and wait for it to confirm on-chain.
+          Buy your {data.tokenName} ({data.symbol}) tokens with no extra fee, you can purchase with a maximum of {'\u00a0'}
+          <AppPopover content={max}><span className={styles['maximum']}>{max && max.toFixed(4)}</span> {data.symbol || ''}</AppPopover>. {'\u00a0'}
+          Make sure to confirm the transaction in your wallet and wait for it to confirm on-chain.
         </p>
       </Row>
       <Row className={[styles['input']].join(' ')}>
@@ -107,12 +110,12 @@ export default function ParticipateModal(props) {
               className={styles['number']}
               defaultValue={bre}
               min={'1'}
-              max={Math.floor(max)||1}
+              max={Math.floor(max) || 1}
               step="1"
               stringMode
               controls={false}
               onChange={handleInputChange}
-              disabled={loading}
+              disabled={true}
             />
             <div className={styles['unit']}>
               {data.symbol || ''}
@@ -128,8 +131,8 @@ export default function ParticipateModal(props) {
         Current Price: {tokenPriceInPT} ETH / {data.symbol || ''}
       </Row> */}
 
-      <Row justify="end" style={{marginTop: '35px'}}>
-        <BasicButton 
+      <Row justify="end" style={{ marginTop: '35px' }}>
+        <BasicButton
           style={{
             width: '212px',
             height: '54px',
@@ -140,9 +143,9 @@ export default function ParticipateModal(props) {
             fontSize: '20px',
           }}
           onClick={props.handleCancel}>
-            Cancel
+          Cancel
         </BasicButton>
-        <BasicButton 
+        <BasicButton
           style={{
             width: '212px',
             height: '54px',
@@ -151,7 +154,7 @@ export default function ParticipateModal(props) {
           }}
           loading={loading}
           onClick={handleOk}>
-            Purchase
+          Purchase
         </BasicButton>
       </Row>
     </Modal>

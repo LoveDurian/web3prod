@@ -41,19 +41,19 @@ export default function Index({ Component, pageProps }: AppProps) {
   } = useResponsive();
 
   useEffect(() => {
-    // axios.get('/boba/product/list')
-    //   .then((res) => {
-    //     setProjectData(res.data);
-    //     setLivePoolsData(res.data.sort((a, b) => {
-    //       return a.status - b.status;
-    //     }).slice(0, 3))
-    //   })
-    //   .catch((error) => {
-    //   })
+    axios.get('/boba/product/list')
+      .then((res) => {
+        setProjectData(res.data);
+        setLivePoolsData(res.data.sort((a, b) => {
+          return a.status - b.status;
+        }).slice(0, 3))
+      })
+      .catch((error) => {
+      })
 
-    // return (() => {
+    return (() => {
 
-    // })
+    })
   }, []);
 
   useEffect(() => {
