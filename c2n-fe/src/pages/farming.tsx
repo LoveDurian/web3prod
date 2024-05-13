@@ -16,7 +16,6 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import {
   EARNED_TOKEN_ADDRESS,
 } from '@src/config'
-import { HelperLink } from '@src/util'
 
 /**
  * Stake form page
@@ -43,7 +42,6 @@ export default function Pools({ Component, pageProps }: AppProps) {
                 <span
                   className={styles['link']}
                   onClick={() => {
-                    window.open(HelperLink)
                   }}>{isDesktopOrLaptop ? 'C2N Farm Tutorial' : 'Tutorial'} </span>
               </span>
             </Col>

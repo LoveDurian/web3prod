@@ -17,7 +17,7 @@ import { useResponsive } from '@src/hooks/useResponsive';
 import { useMessage } from '@src/hooks/useMessage';
 
 import { Row, Col } from 'antd'
-import Mask from '@src/components/elements/Mask'
+// import Mask from '@src/components/elements/mask'
 
 export default function Pools({ Component, pageProps }: AppProps) {
   const {
@@ -50,25 +50,25 @@ export default function Pools({ Component, pageProps }: AppProps) {
     return d;
   }, [data])
 
-  // useEffect(() => {
-  //   setPageLoading(true);
+  useEffect(() => {
+    setPageLoading(true);
 
-  //   axios.get('/boba/product/list')
-  //     .then((res) => {
-  //       setData(res.data);
-  //     })
-  //     .catch((error) => {
-  //       setErrorMessage('Network error, please check your network and refresh.')
-  //       console.error(error);
-  //     })
-  //     .finally(() => {
-  //       setPageLoading(false);
-  //     })
+    axios.get('/boba/product/list')
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((error) => {
+        setErrorMessage('Network error, please check your network and refresh.')
+        console.error(error);
+      })
+      .finally(() => {
+        setPageLoading(false);
+      })
 
-  //   return (() => {
+    return (() => {
 
-  //   })
-  // }, []);
+    })
+  }, []);
 
   useEffect(() => {
   }, [data])
@@ -76,7 +76,7 @@ export default function Pools({ Component, pageProps }: AppProps) {
   return (
     <main className={["container", styles['pools']].join(' ')} >
       <PageLoader>
-        <Mask />
+        {/* <Mask /> */}
         <section className={styles['sec-1']}>
           <LivePools className={[styles['live-pools'], "main-content"].join(' ')} data={livePoolsData}>
           </LivePools>

@@ -14,8 +14,7 @@ import {
   tokenImage,
 } from '@src/config'
 import { useEffect, useMemo } from 'react'
-import Mask from '@src/components/elements/Mask'
-import { HelperLink } from '@src/util'
+// import Mask from '@src/components/elements/mask'
 
 /**
  * Stake form page
@@ -57,7 +56,7 @@ export default function Pools({ Component, pageProps }: AppProps) {
 
   return (
     <main className={styles['container'] + " container"}>
-      <Mask />
+      {/* <Mask /> */}
       <section className={styles['intro'] + ' main-content'}>
         <h2 className={styles['stake-title']}>
           <Row justify="space-between">
@@ -71,7 +70,6 @@ export default function Pools({ Component, pageProps }: AppProps) {
                 <span
                   className={styles['link']}
                   onClick={() => {
-                    window.open(HelperLink)
                   }}>{isDesktopOrLaptop ? 'C2N Staking Tutorial' : 'Tutorial'} </span>
               </span>
             </Col>

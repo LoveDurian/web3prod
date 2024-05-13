@@ -713,7 +713,7 @@ export const useLogin = ({ pId = 0 }) => {
   return {
     LoginModal,
     showLoginModal,
-    isUserRegister,
+    isUserRegister: true,
     setLoginEmail,
     setLoginConfig,
     setLoginState,

@@ -1,13 +1,22 @@
 // boba token
-export const STAKED_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_STAKED_TOKEN_ADDRESS
+export const STAKED_TOKEN_ADDRESS =
+  process.env.NEXT_PUBLIC_STAKED_TOKEN_ADDRESS;
 
 // bre token
-export const EARNED_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_EARNED_TOKEN_ADDRESS
+export const EARNED_TOKEN_ADDRESS =
+  process.env.NEXT_PUBLIC_EARNED_TOKEN_ADDRESS;
 
 // staking address
-export const stakingPoolAddresses = JSON.parse(process.env.NEXT_PUBLIC_STAKING_POOL_ADDRESSES)
+export const stakingPoolAddresses = [
+  {
+    chainId: 11155111,
+    stakingAddress: "0xB627f9DCd6164De3D914F265F405d30366D6Ac94",
+    depositTokenAddress: "0x1Dd5dcB05E451EfC6d6D4Fb2B905b02Dc3679aB4",
+    earnedTokenAddress: "0x1Dd5dcB05E451EfC6d6D4Fb2B905b02Dc3679aB4",
+  },
+];
 
-export const API_DOMAIN = process.env.NEXT_PUBLIC_SERVER_DOMAIN
+export const API_DOMAIN = process.env.NEXT_PUBLIC_SERVER_DOMAIN;
 
 export const VALID_CHAIN_IDS = [
   // Boba Network
@@ -18,9 +27,9 @@ export const VALID_CHAIN_IDS = [
   56,
   // bsc test network
   97,
-]
+];
 
-export * from './valid_chains';
+export * from "./valid_chains";
 
 // 0: bre pool 1: boba pool
 export const STAKING_POOL_ID = 0;
@@ -29,8 +38,8 @@ export const APPROVE_STAKING_AMOUNT_ETHER = 1000000;
 
 export const TELEGRAM_BOT_ID = process.env.NEXT_PUBLIC_TG_BOT_ID;
 
-export const BASE_URL = 'https://pancakeswap.finance'
-export const BASE_BSC_SCAN_URL = 'https://bscscan.com'
+export const BASE_URL = "https://pancakeswap.finance";
+export const BASE_BSC_SCAN_URL = "https://bscscan.com";
 
 export const tokenAbi = [
   // Read-Only Functions
@@ -51,4 +60,5 @@ export const tokenAbi = [
   // Events
 ];
 
-export const tokenImage = 'http://bobabrewery.oss-ap-southeast-1.aliyuncs.com/brewery_logo.jpg'
+export const tokenImage =
+  "http://bobabrewery.oss-ap-southeast-1.aliyuncs.com/brewery_logo.jpg";

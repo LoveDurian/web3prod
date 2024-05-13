@@ -35,6 +35,7 @@ import { useStake } from '../hooks/useStake'
 import { useThirdParty } from '../hooks/useThirdParty';
 import AppPopover from '@src/components/elements/AppPopover';
 import { WarningOutlined, CheckCircleTwoTone } from '@ant-design/icons';
+import { parseUnits } from 'ethers/lib/utils';
 
 type OtherPoolInfoProps =
   {
@@ -114,7 +115,7 @@ export default function Pool({ Component, pageProps }: AppProps) {
   const [poolId, setPoolId] = useState<number>(STAKING_POOL_ID);
   const [statesReady, setStatesReady] = useState<boolean>(false);
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
-  const [canRegister, setCanRegister] = useState<boolean>(false);
+  const [canRegister, setCanRegister] = useState<boolean>(true);
   const [isParticipated, setIsParticipated] = useState<boolean>(false);
   const [participateAmount, setParticipateAmount] = useState();
   const [allocationTop, setAllocationTop] = useState();
@@ -126,7 +127,7 @@ export default function Pool({ Component, pageProps }: AppProps) {
   const [paymentTokenAddress, setPaymentTokenAddress] = useState<string>('');
   const [paymentTokenDecimal, setPaymentTokenDecimal] = useState<number>(18);
 
-
+  console.log({ allocationTop }, '------')
   // status: -1:not ready, 0: not started, 1: in registration, 
   // 2: after registration and before participation,
   // 3: in sale,
@@ -149,6 +150,7 @@ export default function Pool({ Component, pageProps }: AppProps) {
     axios.get('/boba/product/base_info', { params: { productId: pId } })
       .then((response) => {
         let data = response.data || {};
+        data.allocationTop = 1;
         setProjectInfo(data);
         setLoginConfig({
           tweetId: data.tweetId,
@@ -173,16 +175,16 @@ export default function Pool({ Component, pageProps }: AppProps) {
     if (!walletAddress) {
       return;
     }
-    // check whether has registered other projects
-    axios.get('/boba/register/can_register', {
-      params: { accountId: walletAddress }
-    })
-      .then((response) => {
-        setCanRegister(true);
-      })
-      .catch((e) => {
-        setCanRegister(false);
-      })
+    // // check whether has registered other projects
+    // axios.get('/boba/register/can_register', {
+    //   params: { accountId: walletAddress }
+    // })
+    //   .then((response) => {
+    //     setCanRegister(true);
+    //   })
+    //   .catch((e) => {
+    //     setCanRegister(false);
+    //   })
 
     const referralCode = localStorage?.getItem('referral');
     if (referralCode) {
@@ -263,7 +265,8 @@ export default function Pool({ Component, pageProps }: AppProps) {
       }
       setMileStones(mileStones);
       setStatus(projectInfo.status);
-      setPaymentTokenAddress(projectInfo.paymentToken);
+      // setPaymentTokenAddress(projectInfo.paymentToken);
+      setPaymentTokenAddress('0x1Dd5dcB05E451EfC6d6D4Fb2B905b02Dc3679aB4');
     }
   }, [projectInfo, otherPoolInfo]);
 
@@ -347,6 +350,7 @@ export default function Pool({ Component, pageProps }: AppProps) {
    * @returns Promise<string> - registration sign
    */
   function getRegistrationSign() {
+    console.log('getRegis-------')
     const f = new FormData();
     f.append('userAddress', walletAddress || '');
     f.append('contractAddress', saleAddress);
@@ -354,6 +358,7 @@ export default function Pool({ Component, pageProps }: AppProps) {
     return axios.post('/boba/encode/sign_registration', f)
       .then((response) => {
         let data = response.data;
+        console.log(data, 'ddddd')
         return data;
       })
       .catch(e => {
@@ -377,6 +382,7 @@ export default function Pool({ Component, pageProps }: AppProps) {
     return axios.post('/boba/encode/sign_participation', f)
       .then((response) => {
         let data = response.data;
+        console.log(data, 'sign ---------')
         return data;
       })
       .catch(e => {
@@ -422,29 +428,29 @@ export default function Pool({ Component, pageProps }: AppProps) {
             return Promise.resolve();
           })
           .then(() => {
-            // on register success
-            const sendRegisterSuccess = async () => {
-              const referralCode = localStorage?.getItem('referral');
-              const f = new FormData();
-              f.append('accountId', walletAddress);
-              f.append('productId', pId);
-              f.append('referralCode', referralCode)
-              return axios.post('/boba/register/user_register', f).then(() => {
-                if (typeof window !== 'undefined') {
-                  window.localStorage.removeItem('referral');
-                }
-              })
-            }
+            // // on register success
+            // const sendRegisterSuccess = async () => {
+            //   const referralCode = localStorage?.getItem('referral');
+            //   const f = new FormData();
+            //   f.append('accountId', walletAddress);
+            //   f.append('productId', pId);
+            //   f.append('referralCode', referralCode)
+            //   return axios.post('/boba/register/user_register', f).then(() => {
+            //     if (typeof window !== 'undefined') {
+            //       window.localStorage.removeItem('referral');
+            //     }
+            //   })
+            // }
 
             function loop() {
-              setTimeout(() => {
-                sendRegisterSuccess()
-                  .catch(() => {
-                    loop();
-                  })
-              }, 3000)
+              // setTimeout(() => {
+              //   sendRegisterSuccess()
+              //     .catch(() => {
+              //       loop();
+              //     })
+              // }, 3000)
             }
-            loop();
+            // loop();
           })
           .then(() => {
             function loop() {
@@ -502,6 +508,7 @@ export default function Pool({ Component, pageProps }: AppProps) {
    * @returns Promise
    */
   async function participate(value) {
+    console.log(value, 'val ---------------')
     if (!saleContract) {
       return Promise.reject();
     }
@@ -509,21 +516,20 @@ export default function Pool({ Component, pageProps }: AppProps) {
     // const decimals = await depositTokenContract.decimals();
     // const paymentAmount = BigNumber.from(projectInfo.tokenPriceInPT).mul(~~value.value).div(Math.pow(10, 18-decimals));
     const paymentAmount = BigNumber.from(projectInfo.tokenPriceInPT).mul(~~value.value);
-
     return approve(saleAddress, Number(ethers.utils.formatUnits(paymentAmount, depositDecimals)), depositDecimals)
       .then(() => {
         return getParticipateSign()
       })
       .then(async (participateSign) => {
         const signBuffer = hexToBytes(participateSign);
-
         // get participation value
         const options = {
+          value: paymentAmount
         };
+        console.log({ allocationTop, paymentAmount: paymentAmount.toString(), saleAddress: projectInfo.saleContractAddress, options }, 'params---------')
         return saleContract.participate(
           signBuffer,
           BigNumber.from(allocationTop + ''),
-          paymentAmount,
           options
         )
           .then((transaction) => {
@@ -806,6 +812,7 @@ export default function Pool({ Component, pageProps }: AppProps) {
       }
     }
     if (statesReady && [3].includes(status) && isRegistered) {
+      // if (isRegistered) {
       return <TransactionButton
         disabled={isParticipated}
         disabledText={'You have purchased'}
@@ -984,9 +991,9 @@ export default function Pool({ Component, pageProps }: AppProps) {
             <Col span={isDesktopOrLaptop ? 6 : 24}>
               {getActionButton()}
             </Col>
-            <Col span={isDesktopOrLaptop ? 6 : 24}>
+            {/* <Col span={isDesktopOrLaptop ? 6 : 24}>
               {getReferralButton()}
-            </Col>
+            </Col> */}
             {/* <Col span={isDesktopOrLaptop ? 6 : 24}>
               <div className={styles['medias']}>
                 <i className="icon"></i>
