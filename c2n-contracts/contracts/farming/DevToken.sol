@@ -26,7 +26,7 @@ contract DevToken is Context, IERC20 {
         _decimals = decimals_;
         _mint(_msgSender(), totalSupply_);
     }
-
+    
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
         _transfer(_msgSender(), recipient, amount);
         return true;
