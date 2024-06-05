@@ -64,7 +64,7 @@ export const useStake = () => {
     if (!depositTokenAddress || !signer) {
       return null;
     }
-    const t = '0x1Dd5dcB05E451EfC6d6D4Fb2B905b02Dc3679aB4'
+    const t = '0x133694bc27E4596eEaad7CdAb02ce9e6d859E604'
     const depositTokenContract = new Contract(t, tokenAbi, signer);
     return depositTokenContract;
   }, [depositTokenAddress, signer]);

@@ -40,9 +40,9 @@ export default [
   // },
   {
     chainId: 11155111,
-    depositTokenAddress: "0x4E71E941878CE2afEB1039A0FE16f5eb557571C8",
-    earnedTokenAddress: "0x4E71E941878CE2afEB1039A0FE16f5eb557571C8",
-    stakingAddress: "0xB5423d8054C72A981bc20e7600515b1f7008493A",
+    depositTokenAddress: "0x133694bc27E4596eEaad7CdAb02ce9e6d859E604",
+    earnedTokenAddress: "0x133694bc27E4596eEaad7CdAb02ce9e6d859E604",
+    stakingAddress: "0x8e347E46FB75E729Dcf4dC050811536F8f28171f",
     poolId: 0,
     available: true,
     depositSymbol: "FC2N",

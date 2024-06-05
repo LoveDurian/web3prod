@@ -29,7 +29,7 @@ export default function Header() {
   } = useMessage();
 
   const tokenInfos = [
-    { chainId: 11155111, symbol: 'C2N', address: '0x4E71E941878CE2afEB1039A0FE16f5eb557571C8' },
+    { chainId: 11155111, symbol: 'C2N', address: '0x133694bc27E4596eEaad7CdAb02ce9e6d859E604' },
   ]
 
   const token = useMemo(() => {

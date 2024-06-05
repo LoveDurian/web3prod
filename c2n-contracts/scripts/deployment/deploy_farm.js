@@ -4,7 +4,8 @@ const {ethers} = require("hardhat");
 
 async function main() {
     const RPS = "1";
-    const startTS= 1712823507
+    // todo 这个需要更新下startTS
+    const startTS= 1717027200
     // get c2n token address from contract address file
     const c2nTokenAddress = getSavedContractAddresses()[hre.network.name]["C2N-TOKEN"];
     console.log("c2nTokenAddress: ", c2nTokenAddress)
